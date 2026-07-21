@@ -210,10 +210,70 @@
     .flash{animation:flash .5s ease}
     @keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
   }
+
+  /* ---- Login gate ---- */
+  #gate{
+    position:fixed;inset:0;z-index:50;background:var(--paper);
+    display:grid;place-items:center;padding:24px;
+  }
+  #gate[hidden]{display:none}
+  .gate-card{
+    width:100%;max-width:360px;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:28px 26px 26px;
+    box-shadow:0 1px 0 var(--line),0 12px 40px -24px rgba(20,24,31,.45);
+  }
+  .gate-brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .gate-brand .glyph{width:36px;height:36px;flex:0 0 36px;font-size:12px}
+  .gate-brand h1{font-size:16px}
+  .gate-brand .tagline{font-size:12px}
+  .gate-card label{display:block;font-weight:600;font-size:13px;margin:14px 0 7px}
+  .gate-card input{
+    width:100%;font-family:var(--mono);font-size:14px;color:var(--ink);
+    padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
+  }
+  .gate-card input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);background:#fff}
+  .gate-btn{
+    width:100%;margin-top:20px;appearance:none;border:0;cursor:pointer;
+    background:var(--ink);color:#fff;font-family:var(--body);font-weight:600;font-size:14px;
+    padding:11px;border-radius:8px;transition:background .12s;
+  }
+  .gate-btn:hover{background:#000}
+  .gate-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .gate-btn[disabled]{opacity:.6;cursor:progress}
+  .gate-error{
+    display:none;margin-top:14px;font-size:12.5px;color:var(--warn);line-height:1.45;
+    border:1px solid #E9C4BF;background:#FBEDEB;border-radius:6px;padding:9px 11px;
+  }
+  .gate-error.show{display:block}
+  .gate-foot{margin-top:18px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.5}
+  body.locked{overflow:hidden}
 </style>
 </head>
-<body>
-<div class="wrap">
+<body class="locked">
+
+<!-- ============ LOGIN GATE ============ -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <div class="glyph"><span>VM<br>RAY</span></div>
+      <div>
+        <h1>Sizing Estimator</h1>
+        <p class="tagline">Sign in to continue.</p>
+      </div>
+    </div>
+    <form id="gateForm" autocomplete="off">
+      <label for="gUser">Username</label>
+      <input id="gUser" type="text" autocomplete="username" spellcheck="false" autocapitalize="none" required />
+      <label for="gPass">Password</label>
+      <input id="gPass" type="password" autocomplete="current-password" required />
+      <button class="gate-btn" type="submit" id="gateBtn">Sign in</button>
+      <p class="gate-error" id="gateError">Incorrect username or password. Check your entry and try again.</p>
+    </form>
+    <p class="gate-foot">Access is checked in your browser against a stored hash.</p>
+  </div>
+</div>
+
+<div class="wrap" hidden>
 
   <header class="masthead">
     <div class="brand">
@@ -770,6 +830,73 @@ $("stamp").textContent = "runs offline · v1";
 
 syncSubtypeEnabled();
 render();
+</script>
+
+<script>
+/* =====================================================================
+   Login gate. The plaintext password is NOT stored here — only a salted
+   SHA-256 hash of "salt|username:password". This keeps casual visitors
+   out and keeps the credentials out of the source, but note: a static
+   page is fully inspectable, so this is access-gating, not real security.
+   ===================================================================== */
+(function(){
+  "use strict";
+  var SALT = "24baa5020ca1ebd5c60876cb9d25c3d5";
+  var EXPECTED = "5aeac242857dea81b7277e65dd4f4fabce021c67d131a43fad60f6456836143c";
+  var SESSION_KEY = "vmray_sizing_auth";
+
+  var gate = document.getElementById("gate");
+  var app = document.querySelector(".wrap");
+  var form = document.getElementById("gateForm");
+  var userEl = document.getElementById("gUser");
+  var passEl = document.getElementById("gPass");
+  var btn = document.getElementById("gateBtn");
+  var errEl = document.getElementById("gateError");
+
+  function reveal(){
+    gate.hidden = true;
+    app.hidden = false;
+    document.body.classList.remove("locked");
+  }
+
+  // Already signed in this tab? (degrades gracefully if storage is blocked)
+  try {
+    if (sessionStorage.getItem(SESSION_KEY) === EXPECTED) { reveal(); return; }
+  } catch (e) {}
+
+  async function sha256Hex(str){
+    var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(function(b){
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    errEl.classList.remove("show");
+    btn.disabled = true;
+    var user = userEl.value.trim();
+    var pass = passEl.value;
+    try {
+      var digest = await sha256Hex(SALT + "|" + user + ":" + pass);
+      if (digest === EXPECTED){
+        try { sessionStorage.setItem(SESSION_KEY, EXPECTED); } catch (e) {}
+        reveal();
+      } else {
+        errEl.classList.add("show");
+        passEl.value = "";
+        passEl.focus();
+      }
+    } catch (err) {
+      errEl.textContent = "Could not verify sign-in in this browser. Try a modern browser over https://.";
+      errEl.classList.add("show");
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  userEl.focus();
+})();
 </script>
 </body>
 </html>
