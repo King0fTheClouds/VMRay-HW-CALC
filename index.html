@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VMRay On-Prem Hardware Sizing Estimator</title>
+<meta name="description" content="A rough first hardware sizing estimate for a VMRay On-Prem installation." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181F;
+    --paper:#EEF0F3;
+    --panel:#FFFFFF;
+    --line:#D3D8E0;
+    --line-strong:#B9C0CB;
+    --muted:#5B6472;
+    --faint:#8A93A0;
+    --accent:#2743F0;
+    --accent-soft:#E7EAFE;
+    --good:#1F7A4D;
+    --caution:#9A6600;
+    --warn:#B23A2E;
+    --radius:10px;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --body:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --display:"Space Grotesk",var(--body);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent)}
+
+  .wrap{max-width:1160px;margin:0 auto;padding:32px 24px 72px}
+
+  /* Masthead */
+  .masthead{
+    display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+    gap:16px;padding-bottom:20px;margin-bottom:28px;
+    border-bottom:1px solid var(--line-strong);
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .glyph{
+    width:40px;height:40px;flex:0 0 40px;border:1.5px solid var(--ink);border-radius:8px;
+    display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:13px;
+    letter-spacing:.02em;
+  }
+  .glyph span{display:block;transform:translateY(-.5px)}
+  h1{
+    font-family:var(--display);font-weight:600;font-size:20px;line-height:1.15;margin:0;
+    letter-spacing:-.01em;
+  }
+  h1 .light{color:var(--muted);font-weight:500}
+  .tagline{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .disclaimer{
+    font-family:var(--mono);font-size:11px;color:var(--faint);
+    border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--panel);
+    max-width:280px;line-height:1.45;
+  }
+
+  /* Grid */
+  .layout{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:24px;align-items:start}
+  @media (max-width:860px){ .layout{grid-template-columns:1fr} }
+
+  .panel{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  }
+  .panel-hd{
+    display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    padding:14px 18px;border-bottom:1px solid var(--line);
+  }
+  .panel-hd h2{
+    font-family:var(--display);font-size:12px;font-weight:600;margin:0;
+    text-transform:uppercase;letter-spacing:.14em;color:var(--ink);
+  }
+  .panel-hd .idx{font-family:var(--mono);font-size:11px;color:var(--faint)}
+
+  /* Controls */
+  .controls{padding:6px 18px 18px}
+  .field{padding:14px 0;border-bottom:1px solid var(--line)}
+  .field:last-child{border-bottom:0}
+  .field > label,.field .flabel{
+    display:block;font-weight:600;font-size:13px;margin-bottom:8px;letter-spacing:.005em;
+  }
+  .hint{color:var(--muted);font-weight:400;font-size:12px;margin-top:5px;line-height:1.45}
+
+  .seg{display:flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;background:var(--paper)}
+  .seg button{
+    flex:1;appearance:none;border:0;background:transparent;cursor:pointer;
+    font-family:var(--body);font-size:13px;font-weight:500;color:var(--muted);
+    padding:9px 8px;line-height:1;transition:background .12s,color .12s;
+  }
+  .seg button + button{border-left:1px solid var(--line-strong)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;font-weight:600}
+  .seg.small button{font-size:12px;padding:8px 6px}
+
+  input[type=number]{
+    width:100%;font-family:var(--mono);font-size:15px;color:var(--ink);
+    padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
+  }
+  input[type=number]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);background:#fff}
+  .with-unit{position:relative}
+  .with-unit .unit{
+    position:absolute;right:12px;top:50%;transform:translateY(-50%);
+    font-family:var(--mono);font-size:12px;color:var(--faint);pointer-events:none;
+  }
+
+  select{
+    width:100%;font-family:var(--body);font-size:13px;color:var(--ink);
+    padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
+  }
+  select:disabled{color:var(--faint);background:#F4F5F7;cursor:not-allowed}
+  select:focus{outline:2px solid var(--accent);outline-offset:1px}
+
+  /* Advanced disclosure */
+  details.adv{border-top:1px solid var(--line)}
+  details.adv > summary{
+    list-style:none;cursor:pointer;padding:14px 0 14px;font-weight:600;font-size:13px;
+    display:flex;align-items:center;gap:8px;user-select:none;
+  }
+  details.adv > summary::-webkit-details-marker{display:none}
+  .chev{font-family:var(--mono);font-size:11px;color:var(--muted);transition:transform .15s}
+  details.adv[open] .chev{transform:rotate(90deg)}
+  .adv-note{font-size:12px;color:var(--muted);margin:-4px 0 4px;line-height:1.45}
+
+  /* Results */
+  .results{display:flex;flex-direction:column;gap:20px}
+
+  .headline{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  }
+  @media (max-width:520px){ .headline{grid-template-columns:1fr 1fr} }
+  .metric{background:var(--panel);padding:16px 18px}
+  .metric .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--faint);text-transform:uppercase}
+  .metric .v{font-family:var(--mono);font-weight:700;font-size:26px;line-height:1.1;margin-top:6px;letter-spacing:-.01em}
+  .metric .v small{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
+  .metric .sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+  /* Topology */
+  .topo{padding:16px 18px}
+  .topo-row{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch}
+  .node{
+    border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
+    padding:10px 12px;min-width:132px;flex:0 0 auto;
+  }
+  .node.server{border-color:var(--accent);background:var(--accent-soft)}
+  .node .ntitle{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .node.server .ntitle{color:var(--accent)}
+  .node .nspec{font-family:var(--mono);font-size:12px;color:var(--ink);margin-top:6px;line-height:1.5}
+  .slots{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;max-width:150px}
+  .slot{width:9px;height:9px;border-radius:2px;background:var(--accent);opacity:.85}
+  .workers-group{display:flex;flex-wrap:wrap;gap:12px}
+  .wmeta{font-family:var(--mono);font-size:11px;color:var(--faint);align-self:center}
+
+  /* Spec cards */
+  .spec{padding:2px 0}
+  .spec-row{
+    display:grid;grid-template-columns:150px 1fr;gap:14px;
+    padding:12px 18px;border-bottom:1px solid var(--line);align-items:baseline;
+  }
+  .spec-row:last-child{border-bottom:0}
+  .spec-row .label{font-weight:600;font-size:13px}
+  .spec-row .label .tag{
+    display:inline-block;font-family:var(--mono);font-size:10px;color:var(--faint);
+    font-weight:500;margin-top:2px;
+  }
+  .spec-row .val{font-family:var(--mono);font-size:14px}
+  .spec-row .val .big{font-weight:700;font-size:15px}
+  .spec-row .val .calc{color:var(--muted);font-size:12px}
+  .basis{padding:12px 18px;font-size:12px;color:var(--muted);line-height:1.55;background:var(--paper);border-top:1px solid var(--line)}
+  .basis code{font-family:var(--mono);font-size:11px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;font-weight:500;
+    padding:5px 11px;border-radius:999px;border:1px solid var(--line-strong);
+  }
+  .chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--faint)}
+  .chip.good{color:var(--good);border-color:#BFE0CE;background:#EEF7F1}
+  .chip.good::before{background:var(--good)}
+  .chip.caution{color:var(--caution);border-color:#E8D9AE;background:#FBF5E6}
+  .chip.caution::before{background:var(--caution)}
+  .chip.warn{color:var(--warn);border-color:#E9C4BF;background:#FBEDEB}
+  .chip.warn::before{background:var(--warn)}
+
+  .colo-scen{display:grid;grid-template-columns:1fr;gap:0}
+  .colo-scen .spec-row{grid-template-columns:190px 1fr}
+
+  .assump{padding:14px 18px}
+  .assump li{font-size:12.5px;color:var(--muted);margin:0 0 8px;padding-left:2px;line-height:1.5}
+  .assump ul{margin:0;padding-left:18px}
+
+  footer{
+    margin-top:36px;padding-top:18px;border-top:1px solid var(--line-strong);
+    font-size:12px;color:var(--faint);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;
+  }
+  footer .mono{font-family:var(--mono)}
+
+  @media (prefers-reduced-motion:no-preference){
+    .metric .v,.node,.chip{transition:opacity .15s ease}
+    .flash{animation:flash .5s ease}
+    @keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="brand">
+      <div class="glyph"><span>VM<br>RAY</span></div>
+      <div>
+        <h1>On-Prem Hardware Sizing <span class="light">Estimator</span></h1>
+        <p class="tagline">Platform Server + Worker capacity from your submission volume.</p>
+      </div>
+    </div>
+    <p class="disclaimer">Rough first estimate only. Confirm against an official VMRay sizing review before purchasing.</p>
+  </header>
+
+  <div class="layout">
+
+    <!-- ============ PARAMETERS ============ -->
+    <section class="panel" aria-label="Parameters">
+      <div class="panel-hd"><h2>Parameters</h2><span class="idx">input</span></div>
+      <div class="controls">
+
+        <div class="field">
+          <span class="flabel">Submission volume</span>
+          <div class="seg small" id="periodSeg" role="group" aria-label="Submission period">
+            <button type="button" data-period="daily" aria-pressed="true">Per day</button>
+            <button type="button" data-period="monthly" aria-pressed="false">Per month</button>
+          </div>
+          <div class="with-unit" style="margin-top:8px">
+            <input type="number" id="submissions" min="1" step="1" value="1000" inputmode="numeric" />
+            <span class="unit" id="subUnit">/ day</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="retention">Data retention</label>
+          <div class="with-unit">
+            <input type="number" id="retention" min="0" step="1" value="180" inputmode="numeric" />
+            <span class="unit">days</span>
+          </div>
+          <p class="hint">How long analysis data and original submissions are stored.</p>
+        </div>
+
+        <div class="field">
+          <span class="flabel">Worker VM disk profile</span>
+          <div class="seg small" id="diskSeg" role="group" aria-label="Disk profile">
+            <button type="button" data-profile="light" aria-pressed="false">Light · 30&nbsp;GB</button>
+            <button type="button" data-profile="medium" aria-pressed="false">Medium · 40&nbsp;GB</button>
+            <button type="button" data-profile="heavy" aria-pressed="true">Heavy · 50&nbsp;GB</button>
+          </div>
+          <p class="hint">Fast disk reserved per analysis VM.</p>
+        </div>
+
+        <div class="field">
+          <span class="flabel">Heavy Web Analysis load</span>
+          <div class="seg small" id="webSeg" role="group" aria-label="Heavy web analysis">
+            <button type="button" data-web="no" aria-pressed="true">No</button>
+            <button type="button" data-web="yes" aria-pressed="false">Yes</button>
+          </div>
+          <p class="hint">Adds CPU headroom on Workers only.</p>
+        </div>
+
+        <div class="field">
+          <label for="basis">Throughput basis</label>
+          <select id="basis">
+            <option value="internal" selected>Internal Exemplary Deployments · 145 / VM·day</option>
+            <option value="benchmark">Analysis Performance Benchmark · 450 / VM·day</option>
+          </select>
+          <p class="hint">Internal is deployment-calibrated and conservative. Benchmark is raw analysis throughput.</p>
+        </div>
+
+        <details class="adv">
+          <summary><span class="chev">▸</span> Advanced assumptions</summary>
+
+          <div class="field" style="border-top:0">
+            <label for="subtype">Predominant submission type</label>
+            <select id="subtype">
+              <option value="calibrated" selected>Benchmark default · 450 / VM·day</option>
+              <option value="web_analysis">Web Analysis · ~700 / VM·day</option>
+              <option value="executable_documents">Executables &amp; documents · ~450 / VM·day</option>
+              <option value="email_static">Static email analysis · ~5000 / VM·day</option>
+            </select>
+            <p class="adv-note" id="subtypeNote">Only applies to the Analysis Performance Benchmark basis.</p>
+          </div>
+
+          <div class="field">
+            <label for="analyses">Analyses per submission</label>
+            <input type="number" id="analyses" min="0.1" step="0.1" value="1" inputmode="decimal" />
+          </div>
+
+          <div class="field">
+            <label for="minutes">Average analysis time</label>
+            <div class="with-unit">
+              <input type="number" id="minutes" min="0.1" step="0.1" value="4" inputmode="decimal" />
+              <span class="unit">min</span>
+            </div>
+            <p class="hint">Baseline reference is 4 minutes.</p>
+          </div>
+
+          <div class="field">
+            <label for="reportmb">Report + analysis data per analysis</label>
+            <div class="with-unit">
+              <input type="number" id="reportmb" min="0" step="1" value="100" inputmode="decimal" />
+              <span class="unit">MB</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="submb">Original submission size</label>
+            <div class="with-unit">
+              <input type="number" id="submb" min="0" step="1" value="10" inputmode="decimal" />
+              <span class="unit">MB</span>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- ============ RECOMMENDATION ============ -->
+    <div class="results">
+
+      <div class="headline" id="headline"></div>
+
+      <section class="panel">
+        <div class="panel-hd"><h2>Deployment topology</h2><span class="idx" id="topoMeta"></span></div>
+        <div class="topo" id="topo"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-hd"><h2>Separated setup</h2><span class="idx">server + workers</span></div>
+        <div class="spec" id="serverSpec"></div>
+        <div class="basis" id="serverBasis"></div>
+        <div class="spec" id="workerSpec"></div>
+        <div class="basis" id="workerBasis"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-hd"><h2>Combined host (optional)</h2><span class="idx" id="coloChipWrap"></span></div>
+        <div class="basis" id="coloReason" style="border-top:0"></div>
+        <div class="colo-scen spec" id="coloSpec"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-hd"><h2>Assumptions</h2><span class="idx">notes</span></div>
+        <div class="assump"><ul id="assump"></ul></div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer>
+    <span>Port of the VMRay On-Prem sizing script — runs entirely in your browser.</span>
+    <span class="mono" id="stamp"></span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* =====================================================================
+   VMRay On-Prem hardware sizing — logic ported 1:1 from the Python tool.
+   All figures are rough first estimates.
+   ===================================================================== */
+
+// ---- Constants -----------------------------------------------------
+const DAYS_PER_MONTH = 30.0;
+
+const INTERNAL_THROUGHPUT = 145.0;      // per VM/day
+const BENCHMARK_THROUGHPUT = 450.0;     // per VM/day
+
+const THROUGHPUT_BASIS_INTERNAL = "internal_exemplary_deployments";
+const THROUGHPUT_BASIS_BENCHMARK = "analysis_performance_benchmark";
+
+const SUBMISSION_TYPE_THROUGHPUTS = {
+  calibrated:           { label: "Analysis Performance Benchmark default", throughput: BENCHMARK_THROUGHPUT },
+  web_analysis:         { label: "Web Analysis",                           throughput: 700.0 },
+  executable_documents: { label: "executables and documents",             throughput: 450.0 },
+  email_static:         { label: "static email analysis",                 throughput: 5000.0 },
+};
+
+const BASELINE_ANALYSIS_MINUTES = 4;
+
+const WORKER_MIN_PARALLEL_VMS = 4;
+const WORKER_CPU_CORES_PER_VM = 1.0;
+const WORKER_RAM_SMALL_FIXED_GB = 2.0;
+const WORKER_RAM_SMALL_PER_VM_GB = 3.0;
+const WORKER_RAM_LARGE_PER_VM_GB = 3.5;
+const WORKER_RESERVED_CPU_CORES = 2;
+const WEB_ANALYSIS_EXTRA_CPU_RATIO = 0.25;
+
+const DEFAULT_SMALL_WORKER_VM_TARGET = 14;
+const DEFAULT_MEDIUM_WORKER_VM_TARGET = 16;
+const DEFAULT_LARGE_WORKER_VM_TARGET = 25;
+
+const SERVER_MIN_FAST_DISK_GB = 200;
+const SERVER_STORAGE_DATA_HEADROOM = 1.20;
+
+const COLOCATION_SMALL_STORAGE_GB = 2000;
+const COLOCATION_MEDIUM_STORAGE_GB = 4000;
+const COLOCATION_SMALL_VM_LIMIT = 10;
+const COLOCATION_MEDIUM_VM_LIMIT = 20;
+
+const COMMON_CPU_CORES = [4,6,8,10,12,16,20,24,32,48,64,96,128,192,256];
+const COMMON_RAM_GB    = [8,16,32,48,64,96,128,156,192,256,384,512,768,1024];
+
+// ---- Helpers -------------------------------------------------------
+function roundUpToCommon(value, options){
+  for(const opt of options){ if(value <= opt) return opt; }
+  const step = options[options.length-1];
+  return Math.ceil(value/step)*step;
+}
+
+function diskPerVmFromProfile(profile){
+  if(profile === "light") return 30.0;
+  if(profile === "medium") return 40.0;
+  return 50.0; // heavy
+}
+
+function calculateWorkerRamGb(n){
+  if(n <= 0) return 0.0;
+  if(n <= 4) return WORKER_RAM_SMALL_FIXED_GB + WORKER_RAM_SMALL_PER_VM_GB * n;
+  return WORKER_RAM_LARGE_PER_VM_GB * n;
+}
+
+function throughputForSubmissionType(basis, subType){
+  if(basis === THROUGHPUT_BASIS_INTERNAL){
+    return { throughput: INTERNAL_THROUGHPUT, label: "Internal Exemplary Deployments" };
+  }
+  const data = SUBMISSION_TYPE_THROUGHPUTS[subType] || SUBMISSION_TYPE_THROUGHPUTS.calibrated;
+  return { throughput: data.throughput, label: data.label };
+}
+
+function estimateRequiredParallelVms(inp, daily){
+  const { throughput, label } = throughputForSubmissionType(inp.throughputBasis, inp.submissionType);
+  const analysisTimeFactor = inp.averageAnalysisMinutes / BASELINE_ANALYSIS_MINUTES;
+  const effective = daily * inp.analysesPerSubmission * analysisTimeFactor;
+  const required = Math.max(WORKER_MIN_PARALLEL_VMS, Math.ceil(effective / throughput));
+  return { required, throughput, effective, label };
+}
+
+function automaticWorkerTarget(req){
+  if(req <= 28) return DEFAULT_SMALL_WORKER_VM_TARGET;
+  if(req <= 100) return DEFAULT_MEDIUM_WORKER_VM_TARGET;
+  return DEFAULT_LARGE_WORKER_VM_TARGET;
+}
+
+function distributeVms(req){
+  const target = automaticWorkerTarget(req);
+  const workers = Math.max(1, Math.ceil(req / target));
+  const vmsPerWorker = Math.ceil(req / workers);
+  const total = workers * vmsPerWorker;
+  return { workers, vmsPerWorker, total };
+}
+
+function estimateServerStorage(inp, daily){
+  const analysisDataGb = daily * inp.analysesPerSubmission * inp.retentionDays * inp.averageReportMb / 1024.0;
+  const originalSubmissionsGb = daily * inp.retentionDays * inp.averageSubmissionMb / 1024.0;
+  const retainedWithout = analysisDataGb + originalSubmissionsGb;
+  const retainedWith = retainedWithout * SERVER_STORAGE_DATA_HEADROOM;
+  const recommended = SERVER_MIN_FAST_DISK_GB + retainedWith;
+  return {
+    recommended,
+    breakdown: {
+      analysisDataGb, originalSubmissionsGb,
+      retainedWithout, retainedWith,
+      baselineGb: SERVER_MIN_FAST_DISK_GB,
+    }
+  };
+}
+
+function estimateServerCpuRam(daily, storageGb){
+  let cpu, ram;
+  if(daily <= 1000){ cpu=4; ram=8; }
+  else if(daily <= 5000){ cpu=8; ram=16; }
+  else if(daily <= 12000){ cpu=16; ram=32; }
+  else if(daily <= 30000){ cpu=24; ram=64; }
+  else { cpu=32; ram=96; }
+
+  if(storageGb >= 12000) ram = Math.max(ram, 32);
+  if(storageGb >= 64000) ram = Math.max(ram, 64);
+  if(storageGb >= 192000) ram = Math.max(ram, 96);
+  return { cpu, ram };
+}
+
+function assessColocation(o){
+  const combinedCpu = roundUpToCommon(o.workerCpuRec + o.serverCpu, COMMON_CPU_CORES);
+  const combinedRam = roundUpToCommon(o.workerRamRec + o.serverRam, COMMON_RAM_GB);
+  const combinedLocalStorage = o.workerDiskRec + o.serverStorage;
+  const combinedExternalStorage = o.workerDiskRec + SERVER_MIN_FAST_DISK_GB;
+
+  let status, reason, level;
+  if(o.workers === 1 && o.required <= COLOCATION_SMALL_VM_LIMIT && o.serverStorage <= COLOCATION_SMALL_STORAGE_GB){
+    status = "Good fit"; level = "good";
+    reason = "small analysis load and small retained data footprint";
+  } else if(o.required <= COLOCATION_MEDIUM_VM_LIMIT && o.serverStorage <= COLOCATION_MEDIUM_STORAGE_GB){
+    status = "Possible with caution"; level = "caution";
+    reason = "moderate size; keep Server VM resources reserved and watch disk I/O";
+  } else {
+    status = "Not recommended by default"; level = "warn";
+    reason = "larger VM count, Worker count, or retained data size makes separation cleaner";
+  }
+  return { status, reason, level, combinedCpu, combinedRam, combinedLocalStorage, combinedExternalStorage };
+}
+
+function calculate(inp){
+  const daily = inp.submissionsPeriod === "monthly" ? inp.submissions / DAYS_PER_MONTH : inp.submissions;
+
+  const { required, throughput, effective, label } = estimateRequiredParallelVms(inp, daily);
+  const { workers, vmsPerWorker, total } = distributeVms(required);
+
+  const workerCpuMin = vmsPerWorker * WORKER_CPU_CORES_PER_VM;
+  const workerCpuWebExtra = inp.heavyWebAnalysis ? Math.ceil(vmsPerWorker * WEB_ANALYSIS_EXTRA_CPU_RATIO) : 0;
+  const workerCpuRec = roundUpToCommon(workerCpuMin + WORKER_RESERVED_CPU_CORES + workerCpuWebExtra, COMMON_CPU_CORES);
+
+  const workerRamMin = calculateWorkerRamGb(vmsPerWorker);
+  const workerRamRec = roundUpToCommon(workerRamMin, COMMON_RAM_GB);
+
+  const workerDiskMin = vmsPerWorker * inp.workerDiskGbPerVm;
+  const workerDiskRec = workerDiskMin;
+
+  const storage = estimateServerStorage(inp, daily);
+  const { cpu: serverCpu, ram: serverRam } = estimateServerCpuRam(daily, storage.recommended);
+
+  const colocation = assessColocation({
+    required, workers,
+    workerCpuRec, workerRamRec, workerDiskRec,
+    serverCpu, serverRam, serverStorage: storage.recommended,
+  });
+
+  return {
+    daily, throughput, label, effective,
+    required, workers, vmsPerWorker, total,
+    workerCpuMin, workerCpuWebExtra, workerCpuRec,
+    workerRamMin, workerRamRec,
+    workerDiskMin, workerDiskRec,
+    serverCpu, serverRam,
+    serverStorage: storage.recommended,
+    breakdown: storage.breakdown,
+    colocation,
+  };
+}
+
+// ---- Formatting ----------------------------------------------------
+function fmtNumber(value, decimals=1){
+  if(Math.abs(value - Math.round(value)) < 1e-9){
+    return Math.round(value).toLocaleString("en-US");
+  }
+  return value.toLocaleString("en-US",{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
+function fmtGb(gb){
+  if(gb >= 1000) return (gb/1000).toFixed(1) + " TB";
+  return gb.toFixed(0) + " GB";
+}
+function esc(s){ return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+// ---- State ---------------------------------------------------------
+const state = {
+  submissionsPeriod: "daily",
+  submissions: 1000,
+  retentionDays: 180,
+  workerDiskProfile: "heavy",
+  workerDiskGbPerVm: 50,
+  heavyWebAnalysis: false,
+  throughputBasis: THROUGHPUT_BASIS_INTERNAL,
+  submissionType: "calibrated",
+  analysesPerSubmission: 1,
+  averageAnalysisMinutes: 4,
+  averageReportMb: 100,
+  averageSubmissionMb: 10,
+};
+
+// ---- Rendering -----------------------------------------------------
+const $ = id => document.getElementById(id);
+
+function render(){
+  const r = calculate(state);
+  const b = r.breakdown, c = r.colocation;
+  const inp = state;
+
+  // Headline metrics
+  $("headline").innerHTML = `
+    <div class="metric">
+      <div class="k">Analysis capacity</div>
+      <div class="v">${r.required}<small> VM slots</small></div>
+      <div class="sub">min parallel analysis VMs required</div>
+    </div>
+    <div class="metric">
+      <div class="k">Worker layout</div>
+      <div class="v">${r.workers}<small> × </small>${r.vmsPerWorker}</div>
+      <div class="sub">${r.workers} worker(s), ${r.total} total VM slots</div>
+    </div>
+    <div class="metric">
+      <div class="k">Daily volume</div>
+      <div class="v">${fmtNumber(r.daily)}</div>
+      <div class="sub">${fmtNumber(inp.submissions)} / ${inp.submissionsPeriod}</div>
+    </div>`;
+
+  // Topology
+  const maxSlots = 60;
+  function slots(n){
+    const show = Math.min(n, maxSlots);
+    let s = '<div class="slots">';
+    for(let i=0;i<show;i++) s += '<span class="slot"></span>';
+    s += '</div>';
+    if(n > maxSlots) s += `<div class="wmeta" style="margin-top:4px">+${n-maxSlots} more</div>`;
+    return s;
+  }
+  let workerNodes = "";
+  const shownWorkers = Math.min(r.workers, 4);
+  for(let i=0;i<shownWorkers;i++){
+    workerNodes += `
+      <div class="node">
+        <div class="ntitle">Worker ${i+1}</div>
+        <div class="nspec">${r.workerCpuRec} cores · ${r.workerRamRec} GB<br>${fmtGb(r.workerDiskRec)} disk</div>
+        ${slots(r.vmsPerWorker)}
+      </div>`;
+  }
+  let extraNote = "";
+  if(r.workers > shownWorkers){
+    extraNote = `<div class="wmeta">+ ${r.workers - shownWorkers} identical worker(s)</div>`;
+  }
+  $("topoMeta").textContent = `${r.workers} worker(s) · ${r.vmsPerWorker} VM/worker`;
+  $("topo").innerHTML = `
+    <div class="topo-row">
+      <div class="node server">
+        <div class="ntitle">Platform Server</div>
+        <div class="nspec">${r.serverCpu} cores · ${r.serverRam} GB<br>${fmtGb(r.serverStorage)} fast storage</div>
+      </div>
+      <div class="workers-group">
+        ${workerNodes}
+        ${extraNote}
+      </div>
+    </div>`;
+
+  // Server spec
+  $("serverSpec").innerHTML = `
+    <div class="spec-row">
+      <div class="label">Platform Server</div>
+      <div class="val"><span class="big">${r.serverCpu} cores</span> · <span class="big">${r.serverRam} GB RAM</span> · <span class="big">${fmtGb(r.serverStorage)}</span> fast storage</div>
+    </div>`;
+  const beforeHeadroom = b.retainedWithout;
+  const withHeadroomBaseline = b.retainedWith + b.baselineGb;
+  $("serverBasis").innerHTML = `
+    Storage basis: ${fmtGb(b.analysisDataGb)} analysis/report data + ${fmtGb(b.originalSubmissionsGb)} original submissions
+    = <code>${fmtGb(beforeHeadroom)}</code> retained data.
+    With 20% headroom + ${fmtGb(b.baselineGb)} server baseline → <code>${fmtGb(withHeadroomBaseline)}</code> calculated.`;
+
+  // Worker spec
+  const cpuCalc = r.workerCpuMin + WORKER_RESERVED_CPU_CORES + r.workerCpuWebExtra;
+  $("workerSpec").innerHTML = `
+    <div class="spec-row">
+      <div class="label">Platform Workers<br><span class="tag">bare metal</span></div>
+      <div class="val">
+        <span class="big">${r.workers} × Worker</span>, each ${r.vmsPerWorker} VM slot(s)
+        <div style="margin-top:6px">
+          <span class="big">${r.workerCpuRec} cores</span> <span class="calc">(${fmtNumber(cpuCalc)} calc)</span> ·
+          <span class="big">${r.workerRamRec} GB RAM</span> <span class="calc">(${fmtNumber(r.workerRamMin)} GB calc)</span> ·
+          <span class="big">${fmtGb(r.workerDiskRec)}</span> fast disk
+        </div>
+      </div>
+    </div>`;
+  const webNote = inp.heavyWebAnalysis
+    ? ` +${r.workerCpuWebExtra} extra CPU core(s) for Web Analysis headroom.` : "";
+  $("workerBasis").innerHTML = `
+    Worker basis: 1 core and ${fmtGb(inp.workerDiskGbPerVm)} disk per VM.
+    RAM = 2 GB + 3 GB × VMs for 1–4 VMs, or 3.5 GB × VMs for 5+ VMs.
+    +2 CPU cores reserved where possible.${webNote}`;
+
+  // Colocation
+  $("coloChipWrap").innerHTML = `<span class="chip ${c.level}">${esc(c.status)}</span>`;
+  $("coloReason").innerHTML = `Server and one Worker on the same machine — ${esc(c.reason)}.`;
+  $("coloSpec").innerHTML = `
+    <div class="spec-row">
+      <div class="label">Server data local</div>
+      <div class="val"><span class="big">${c.combinedCpu} cores</span> · <span class="big">${c.combinedRam} GB RAM</span> · <span class="big">${fmtGb(c.combinedLocalStorage)}</span> fast storage</div>
+    </div>
+    <div class="spec-row">
+      <div class="label">Retained data on NAS / external</div>
+      <div class="val"><span class="big">${c.combinedCpu} cores</span> · <span class="big">${c.combinedRam} GB RAM</span> · <span class="big">${fmtGb(c.combinedExternalStorage)}</span> local + external retained-data storage</div>
+    </div>`;
+
+  // Assumptions
+  const items = [];
+  items.push(`${fmtNumber(inp.analysesPerSubmission)} analysis job(s) per submission; ${fmtNumber(inp.averageAnalysisMinutes)} min average analysis time (baseline reference is ${BASELINE_ANALYSIS_MINUTES} min).`);
+  items.push(`Server storage uses ${fmtNumber(inp.averageReportMb)} MB analysis/report data per analysis and ${fmtNumber(inp.averageSubmissionMb)} MB original submission size per submission.`);
+  if(inp.heavyWebAnalysis){
+    items.push(`Web Analysis headroom adds CPU only; RAM and disk stay based on total VM slots.`);
+  }
+  items.push(`VM count uses the "${esc(r.label)}" throughput basis: ${fmtNumber(r.throughput)} workload units per VM/day. Effective workload used for sizing: ${fmtNumber(r.effective)} units/day.`);
+  items.push(`Minimum parallel VM slots: ${WORKER_MIN_PARALLEL_VMS}. Server CPU/RAM scales mainly by daily volume; retention mainly increases storage.`);
+  $("assump").innerHTML = items.map(t=>`<li>${t}</li>`).join("");
+
+  // flash changed headline (subtle)
+  if(window.matchMedia && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    $("headline").classList.remove("flash"); void $("headline").offsetWidth; $("headline").classList.add("flash");
+  }
+}
+
+// ---- Wiring --------------------------------------------------------
+function syncSubtypeEnabled(){
+  const sel = $("subtype");
+  const isBenchmark = state.throughputBasis === THROUGHPUT_BASIS_BENCHMARK;
+  sel.disabled = !isBenchmark;
+  $("subtypeNote").textContent = isBenchmark
+    ? "Refines the benchmark throughput for your predominant traffic."
+    : "Disabled — only applies to the Analysis Performance Benchmark basis.";
+  // Mirror Python: internal basis always uses "calibrated"
+  state.submissionType = isBenchmark ? sel.value : "calibrated";
+}
+
+function clampNum(el, fallback){
+  let v = parseFloat(String(el.value).replace(",","."));
+  const min = el.min!=="" ? parseFloat(el.min) : -Infinity;
+  if(!isFinite(v)) v = fallback;
+  if(v < min) v = min;
+  return v;
+}
+
+function bindSeg(id, key, map){
+  const seg = $(id);
+  seg.addEventListener("click", e=>{
+    const btn = e.target.closest("button"); if(!btn) return;
+    [...seg.querySelectorAll("button")].forEach(x=>x.setAttribute("aria-pressed","false"));
+    btn.setAttribute("aria-pressed","true");
+    map(btn);
+    render();
+  });
+}
+
+bindSeg("periodSeg","submissionsPeriod",btn=>{
+  state.submissionsPeriod = btn.dataset.period;
+  $("subUnit").textContent = state.submissionsPeriod === "monthly" ? "/ month" : "/ day";
+});
+bindSeg("diskSeg","workerDiskProfile",btn=>{
+  state.workerDiskProfile = btn.dataset.profile;
+  state.workerDiskGbPerVm = diskPerVmFromProfile(btn.dataset.profile);
+});
+bindSeg("webSeg","heavyWebAnalysis",btn=>{
+  state.heavyWebAnalysis = btn.dataset.web === "yes";
+});
+
+$("submissions").addEventListener("input", e=>{ state.submissions = clampNum(e.target,1000); render(); });
+$("retention").addEventListener("input", e=>{ state.retentionDays = clampNum(e.target,180); render(); });
+$("analyses").addEventListener("input", e=>{ state.analysesPerSubmission = clampNum(e.target,1); render(); });
+$("minutes").addEventListener("input", e=>{ state.averageAnalysisMinutes = clampNum(e.target,4); render(); });
+$("reportmb").addEventListener("input", e=>{ state.averageReportMb = clampNum(e.target,100); render(); });
+$("submb").addEventListener("input", e=>{ state.averageSubmissionMb = clampNum(e.target,10); render(); });
+
+$("basis").addEventListener("change", e=>{
+  state.throughputBasis = e.target.value === "benchmark" ? THROUGHPUT_BASIS_BENCHMARK : THROUGHPUT_BASIS_INTERNAL;
+  syncSubtypeEnabled();
+  render();
+});
+$("subtype").addEventListener("change", ()=>{ syncSubtypeEnabled(); render(); });
+
+$("stamp").textContent = "runs offline · v1";
+
+syncSubtypeEnabled();
+render();
+</script>
+</body>
+</html>
