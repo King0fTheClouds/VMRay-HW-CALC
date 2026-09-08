@@ -184,7 +184,7 @@ body:not(.locked) #login-gate{display:none;}
 .field .hint{font-size:12px;color:var(--text-faint);margin-top:6px;}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
-input[type=number], input[type=text], select{
+input[type=number], input[type=text], input[type=password], select{
   width:100%;
   background:var(--field);
   border:1px solid var(--border);
@@ -196,7 +196,7 @@ input[type=number], input[type=text], select{
   outline:none;
   transition:border-color .15s ease, box-shadow .15s ease;
 }
-input[type=number]:focus, input[type=text]:focus, select:focus{
+input[type=number]:focus, input[type=text]:focus, input[type=password]:focus, select:focus{
   border-color:var(--accent-2);
   box-shadow:0 0 0 3px rgba(76,159,214,0.18);
 }
@@ -347,10 +347,8 @@ footer{
 <div id="login-gate">
   <form class="login-card" id="login-form" autocomplete="off">
     <svg class="mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="50,6 88,50 50,94" fill="var(--accent-deep)"/>
-      <polygon points="50,6 12,50 50,94" fill="var(--accent-2)"/>
-      <polygon points="50,6 69,50 50,94" fill="var(--accent)" opacity="0.9"/>
-      <polygon points="50,6 31,50 50,94" fill="var(--accent)" opacity="0.55"/>
+      <rect x="2" y="2" width="96" height="96" rx="20" fill="var(--accent-deep)"/>
+      <path d="M22 26 L50 76 L78 26" fill="none" stroke="var(--accent)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     <span class="word">VMRAY</span>
     <h2>Sign in to Hardware Sizing</h2>
@@ -372,10 +370,8 @@ footer{
 
   <header class="hero">
     <svg class="mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="50,6 88,50 50,94" fill="var(--accent-deep)"/>
-      <polygon points="50,6 12,50 50,94" fill="var(--accent-2)"/>
-      <polygon points="50,6 69,50 50,94" fill="var(--accent)" opacity="0.9"/>
-      <polygon points="50,6 31,50 50,94" fill="var(--accent)" opacity="0.55"/>
+      <rect x="2" y="2" width="96" height="96" rx="20" fill="var(--accent-deep)"/>
+      <path d="M22 26 L50 76 L78 26" fill="none" stroke="var(--accent)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     <div class="word">VMRAY</div>
     <h1>On-Prem Hardware Sizing</h1>
