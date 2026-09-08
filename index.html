@@ -1,519 +1,535 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>VMRay On-Prem Hardware Sizing Estimator</title>
-<meta name="description" content="A rough first hardware sizing estimate for a VMRay On-Prem installation." />
-<link rel="icon" type="image/png" href="data:image/png;base64,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" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VMRay On-Prem Hardware Sizing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#0B2436;
-    --paper:#EEF2F4;
-    --panel:#FFFFFF;
-    --line:#D7DEE3;
-    --line-strong:#B7C3CB;
-    --muted:#4F6B79;
-    --faint:#87A0AB;
-    --accent:#01344E;
-    --accent-soft:#E1EAEF;
-    --good:#1F7A4D;
-    --caution:#9A6600;
-    --warn:#B23A2E;
-    --radius:10px;
-    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-    --body:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    --display:"Space Grotesk",var(--body);
-  }
-  *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--body);
-    font-size:15px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:var(--accent)}
+:root{
+  --bg:#081326;
+  --bg-2:#0a1830;
+  --panel:#0e2038;
+  --panel-2:#122a4a;
+  --field:#0c1f3a;
+  --border:#1e3a5c;
+  --border-soft:#152c4a;
+  --text:#eef4fb;
+  --text-dim:#a9bcd6;
+  --text-faint:#6f88a8;
+  --accent:#6fe0e8;
+  --accent-2:#4c9fd6;
+  --accent-deep:#173e63;
+  --good:#4fd8a0;
+  --good-bg:rgba(79,216,160,0.1);
+  --warn:#f0b955;
+  --warn-bg:rgba(240,185,85,0.1);
+  --bad:#f28b87;
+  --bad-bg:rgba(242,139,135,0.1);
+  --radius:3px;
+  --font-display:'Space Grotesk', sans-serif;
+  --font-body:'IBM Plex Sans', sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% -80px, rgba(79,159,214,0.16), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent-2);color:#04101f;}
+a{color:var(--accent);}
 
-  .wrap{max-width:1160px;margin:0 auto;padding:32px 24px 72px}
+.page{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
+body.locked .page{display:none;}
 
-  /* Masthead */
-  .masthead{
-    display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
-    gap:16px;padding-bottom:20px;margin-bottom:28px;
-    border-bottom:1px solid var(--line-strong);
-  }
-  .brand{display:flex;align-items:center;gap:14px}
-  .glyph{
-    width:40px;height:40px;flex:0 0 40px;border-radius:8px;
-    display:grid;place-items:center;overflow:hidden;background:var(--panel);
-  }
-  .glyph img{width:100%;height:100%;object-fit:contain;display:block}
-  h1{
-    font-family:var(--display);font-weight:600;font-size:20px;line-height:1.15;margin:0;
-    letter-spacing:-.01em;
-  }
-  h1 .light{color:var(--muted);font-weight:500}
-  .tagline{margin:2px 0 0;color:var(--muted);font-size:13px}
-  .disclaimer{
-    font-family:var(--mono);font-size:11px;color:var(--faint);
-    border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--panel);
-    max-width:280px;line-height:1.45;
-  }
+/* ---------- Login gate ---------- */
+#login-gate{
+  position:fixed;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% 30%, rgba(79,159,214,0.16), transparent 60%),
+    var(--bg);
+  padding:24px;
+}
+body:not(.locked) #login-gate{display:none;}
+.login-card{
+  width:100%;max-width:360px;
+  background:var(--panel);border:1px solid var(--border-soft);border-radius:var(--radius);
+  padding:36px 32px 32px;
+}
+.login-card .mark{width:44px;height:44px;margin:0 auto 18px;}
+.login-card .word{
+  display:block;text-align:center;font-family:var(--font-display);font-weight:700;
+  font-size:12px;letter-spacing:0.28em;color:var(--accent);margin-bottom:8px;
+}
+.login-card h2{
+  font-family:var(--font-display);font-size:18px;font-weight:600;text-align:center;margin:0 0 26px;
+}
+.login-card .field{margin-bottom:16px;}
+.login-card .btn-primary{margin-top:8px;}
+.login-error{
+  display:none;font-size:12.5px;color:var(--bad);background:var(--bad-bg);
+  border:1px solid rgba(242,139,135,0.35);border-radius:var(--radius);
+  padding:9px 12px;margin-bottom:16px;
+}
+.login-error.show{display:block;}
+.login-note{font-size:11.5px;color:var(--text-faint);text-align:center;margin-top:18px;line-height:1.6;}
 
-  /* Grid */
-  .layout{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:24px;align-items:start}
-  @media (max-width:860px){ .layout{grid-template-columns:1fr} }
+/* ---------- Hero ---------- */
+.hero{
+  padding:64px 0 40px;
+  text-align:center;
+  border-bottom:1px solid var(--border-soft);
+}
+.mark{margin:0 auto 22px;width:56px;height:56px;}
+.hero h1{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:clamp(28px,4vw,40px);
+  margin:0 0 10px;
+  letter-spacing:-0.01em;
+}
+.hero .word{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:0.28em;
+  color:var(--accent);
+  margin-bottom:14px;
+}
+.hero p{
+  max-width:520px;
+  margin:0 auto;
+  color:var(--text-dim);
+  font-size:15px;
+}
 
-  /* Check Your Specs — full-width panel, first thing shown after sign-in */
-  .specs-panel{margin-bottom:24px}
-  .specs-body{display:flex;flex-wrap:wrap}
-  .specs-inputs{flex:0 0 300px;padding:6px 18px 18px;border-right:1px solid var(--line)}
-  .specs-output{flex:1 1 320px;padding:2px 0}
-  @media (max-width:700px){
-    .specs-inputs{flex:1 1 100%;border-right:0;border-bottom:1px solid var(--line)}
-    .specs-output{flex:1 1 100%}
-  }
+/* ---------- Tool switch ---------- */
+.tool-switch{
+  display:flex;
+  gap:6px;
+  justify-content:center;
+  margin:32px 0 44px;
+  flex-wrap:wrap;
+}
+.tool-switch button{
+  font-family:var(--font-body);
+  font-size:14px;
+  font-weight:500;
+  color:var(--text-dim);
+  background:var(--panel);
+  border:1px solid var(--border-soft);
+  padding:11px 18px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.tool-switch button:hover{color:var(--text);border-color:var(--border);}
+.tool-switch button.active{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#04101f;
+  font-weight:600;
+}
 
-  .panel{
-    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-  }
-  .panel-hd{
-    display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-    padding:14px 18px;border-bottom:1px solid var(--line);
-  }
-  .panel-hd h2{
-    font-family:var(--display);font-size:12px;font-weight:600;margin:0;
-    text-transform:uppercase;letter-spacing:.14em;color:var(--ink);
-  }
-  .panel-hd .idx{font-family:var(--mono);font-size:11px;color:var(--faint)}
+/* ---------- Panels ---------- */
+.tool-panel{display:none;}
+.tool-panel.active{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
 
-  /* Controls */
-  .controls{padding:6px 18px 18px}
-  .field{padding:14px 0;border-bottom:1px solid var(--line)}
-  .field:last-child{border-bottom:0}
-  .field > label,.field .flabel{
-    display:block;font-weight:600;font-size:13px;margin-bottom:8px;letter-spacing:.005em;
-  }
-  .hint{color:var(--muted);font-weight:400;font-size:12px;margin-top:5px;line-height:1.45}
+.tool-intro{max-width:640px;margin:0 0 32px;}
+.tool-intro h2{
+  font-family:var(--font-display);
+  font-size:22px;
+  font-weight:600;
+  margin:0 0 8px;
+}
+.tool-intro p{color:var(--text-dim);font-size:14.5px;margin:0;}
 
-  .seg{display:flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;background:var(--paper)}
-  .seg button{
-    flex:1;appearance:none;border:0;background:transparent;cursor:pointer;
-    font-family:var(--body);font-size:13px;font-weight:500;color:var(--muted);
-    padding:9px 8px;line-height:1;transition:background .12s,color .12s;
-  }
-  .seg button + button{border-left:1px solid var(--line-strong)}
-  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;font-weight:600}
-  .seg.small button{font-size:12px;padding:8px 6px}
+.layout{
+  display:grid;
+  grid-template-columns:380px 1fr;
+  gap:28px;
+  align-items:start;
+}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr;}
+}
 
-  input[type=number]{
-    width:100%;font-family:var(--mono);font-size:15px;color:var(--ink);
-    padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
-  }
-  input[type=number]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);background:#fff}
-  .with-unit{position:relative}
-  .with-unit .unit{
-    position:absolute;right:12px;top:50%;transform:translateY(-50%);
-    font-family:var(--mono);font-size:12px;color:var(--faint);pointer-events:none;
-  }
+/* ---------- Form ---------- */
+.form-panel{
+  background:var(--panel);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius);
+  padding:26px 26px 28px;
+}
+.field{margin-bottom:20px;}
+.field:last-of-type{margin-bottom:0;}
+.field label{
+  display:block;
+  font-size:13px;
+  font-weight:500;
+  color:var(--text-dim);
+  margin-bottom:7px;
+}
+.field .hint{font-size:12px;color:var(--text-faint);margin-top:6px;}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
-  select{
-    width:100%;font-family:var(--body);font-size:13px;color:var(--ink);
-    padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
-  }
-  select:disabled{color:var(--faint);background:#F4F5F7;cursor:not-allowed}
-  select:focus{outline:2px solid var(--accent);outline-offset:1px}
+input[type=number], input[type=text], select{
+  width:100%;
+  background:var(--field);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:14.5px;
+  padding:10px 12px;
+  border-radius:var(--radius);
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+input[type=number]:focus, input[type=text]:focus, select:focus{
+  border-color:var(--accent-2);
+  box-shadow:0 0 0 3px rgba(76,159,214,0.18);
+}
+select{appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23a9bcd6'/></svg>");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
 
-  /* Advanced disclosure */
-  details.adv{border-top:1px solid var(--line)}
-  details.adv > summary{
-    list-style:none;cursor:pointer;padding:14px 0 14px;font-weight:600;font-size:13px;
-    display:flex;align-items:center;gap:8px;user-select:none;
-  }
-  details.adv > summary::-webkit-details-marker{display:none}
-  .chev{font-family:var(--mono);font-size:11px;color:var(--muted);transition:transform .15s}
-  details.adv[open] .chev{transform:rotate(90deg)}
-  .adv-note{font-size:12px;color:var(--muted);margin:-4px 0 4px;line-height:1.45}
+.choice-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.choice-card{
+  border:1px solid var(--border);
+  background:var(--field);
+  border-radius:var(--radius);
+  padding:12px 13px;
+  cursor:pointer;
+  transition:border-color .15s ease, background .15s ease;
+}
+.choice-card:hover{border-color:var(--accent-2);}
+.choice-card.selected{border-color:var(--accent);background:rgba(111,224,232,0.08);}
+.choice-card .cc-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.choice-card .cc-sub{font-size:11.5px;color:var(--text-faint);}
 
-  /* Results */
-  .results{display:flex;flex-direction:column;gap:20px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.toggle-row label{margin-bottom:0;}
+.switch{
+  position:relative;width:40px;height:22px;flex:none;
+  background:var(--field);border:1px solid var(--border);border-radius:999px;
+  cursor:pointer;transition:background .15s ease, border-color .15s ease;
+}
+.switch::after{
+  content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+  background:var(--text-faint);transition:transform .15s ease, background .15s ease;
+}
+.switch.on{background:var(--accent-deep);border-color:var(--accent-2);}
+.switch.on::after{transform:translateX(18px);background:var(--accent);}
 
-  .headline{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
-    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
-  }
-  @media (max-width:680px){ .headline{grid-template-columns:1fr 1fr} }
-  .metric{background:var(--panel);padding:16px 18px}
-  .metric .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--faint);text-transform:uppercase}
-  .metric .v{font-family:var(--mono);font-weight:700;font-size:26px;line-height:1.1;margin-top:6px;letter-spacing:-.01em}
-  .metric .v small{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
-  .metric .sub{font-size:12px;color:var(--muted);margin-top:4px}
+details.advanced{margin-top:20px;border-top:1px solid var(--border-soft);padding-top:16px;}
+details.advanced summary{
+  cursor:pointer;font-size:13px;font-weight:500;color:var(--accent-2);
+  list-style:none;display:flex;align-items:center;gap:6px;
+}
+details.advanced summary::-webkit-details-marker{display:none;}
+details.advanced summary::before{content:"▸";font-size:11px;transition:transform .15s ease;}
+details.advanced[open] summary::before{transform:rotate(90deg);}
+details.advanced .field{margin-top:18px;}
 
-  /* Topology */
-  .topo{padding:16px 18px}
-  .topo-row{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch}
-  .node{
-    border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
-    padding:10px 12px;min-width:132px;flex:0 0 auto;
-  }
-  .node.server{border-color:var(--accent);background:var(--accent-soft)}
-  .node .ntitle{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-  .node.server .ntitle{color:var(--accent)}
-  .node .nspec{font-family:var(--mono);font-size:12px;color:var(--ink);margin-top:6px;line-height:1.5}
-  .slots{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;max-width:150px}
-  .slot{width:9px;height:9px;border-radius:2px;background:var(--accent);opacity:.85}
-  .workers-group{display:flex;flex-wrap:wrap;gap:12px}
-  .wmeta{font-family:var(--mono);font-size:11px;color:var(--faint);align-self:center}
+.btn-primary{
+  margin-top:24px;width:100%;
+  background:var(--accent);color:#04101f;border:none;
+  font-family:var(--font-body);font-size:14.5px;font-weight:600;
+  padding:13px 16px;border-radius:var(--radius);cursor:pointer;
+  transition:background .15s ease, transform .1s ease;
+}
+.btn-primary:hover{background:#84e7ee;}
+.btn-primary:active{transform:scale(0.99);}
 
-  /* Spec cards */
-  .spec{padding:2px 0}
-  .spec-row{
-    display:grid;grid-template-columns:150px 1fr;gap:14px;
-    padding:12px 18px;border-bottom:1px solid var(--line);align-items:baseline;
-  }
-  .spec-row:last-child{border-bottom:0}
-  .spec-row .label{font-weight:600;font-size:13px}
-  .spec-row .label .tag{
-    display:inline-block;font-family:var(--mono);font-size:10px;color:var(--faint);
-    font-weight:500;margin-top:2px;
-  }
-  .spec-row .val{font-family:var(--mono);font-size:14px}
-  .spec-row .val .big{font-weight:700;font-size:15px}
-  .spec-row .val .calc{color:var(--muted);font-size:12px}
-  .basis{padding:12px 18px;font-size:12px;color:var(--muted);line-height:1.55;background:var(--paper);border-top:1px solid var(--line)}
-  .basis code{font-family:var(--mono);font-size:11px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+.subsection-label{
+  font-family:var(--font-display);font-size:12.5px;font-weight:600;
+  color:var(--text-faint);margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border-soft);
+}
 
-  .chip{
-    display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;font-weight:500;
-    padding:5px 11px;border-radius:999px;border:1px solid var(--line-strong);
-  }
-  .chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--faint)}
-  .chip.good{color:var(--good);border-color:#BFE0CE;background:#EEF7F1}
-  .chip.good::before{background:var(--good)}
-  .chip.caution{color:var(--caution);border-color:#E8D9AE;background:#FBF5E6}
-  .chip.caution::before{background:var(--caution)}
-  .chip.warn{color:var(--warn);border-color:#E9C4BF;background:#FBEDEB}
-  .chip.warn::before{background:var(--warn)}
+/* ---------- Results ---------- */
+.results{min-height:200px;}
+.placeholder{
+  border:1px dashed var(--border);border-radius:var(--radius);
+  padding:60px 24px;text-align:center;color:var(--text-faint);font-size:14px;
+}
+.placeholder .mark-sm{width:30px;height:30px;margin:0 auto 14px;opacity:.5;}
 
-  .colo-scen{display:grid;grid-template-columns:1fr;gap:0}
-  .colo-scen .spec-row{grid-template-columns:190px 1fr}
+.stat-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border-soft);border:1px solid var(--border-soft);border-radius:var(--radius);
+  overflow:hidden;margin-bottom:28px;
+}
+@media (max-width:640px){.stat-strip{grid-template-columns:1fr 1fr;}}
+.stat-strip .stat{background:var(--panel);padding:16px 16px 15px;}
+.stat .num{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--accent);line-height:1.1;}
+.stat .lbl{font-size:12px;color:var(--text-faint);margin-top:5px;}
 
-  .assump{padding:14px 18px}
-  .assump li{font-size:12.5px;color:var(--muted);margin:0 0 8px;padding-left:2px;line-height:1.5}
-  .assump ul{margin:0;padding-left:18px}
+.spec-group{margin-bottom:30px;}
+.spec-group:last-child{margin-bottom:0;}
+.spec-head{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.spec-head .tri{width:9px;height:9px;flex:none;}
+.spec-head h3{font-family:var(--font-display);font-size:16px;font-weight:600;margin:0;}
+.spec-head .status-pill{
+  margin-left:auto;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;
+}
+.spec-body{
+  border-left:2px solid var(--accent-deep);padding-left:18px;
+}
+.spec-numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:12px;}
+@media (max-width:640px){.spec-numbers{grid-template-columns:1fr 1fr;}}
+.spec-numbers .item .num{font-family:var(--font-display);font-size:19px;font-weight:600;}
+.spec-numbers .item .lbl{font-size:12px;color:var(--text-faint);margin-top:3px;}
+.spec-numbers .item .sub{font-size:11px;color:var(--text-faint);margin-top:2px;}
+.spec-note{font-size:12.5px;color:var(--text-dim);line-height:1.6;}
+.spec-note b{color:var(--text);font-weight:600;}
 
-  footer{
-    margin-top:36px;padding-top:18px;border-top:1px solid var(--line-strong);
-    font-size:12px;color:var(--faint);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;
-  }
-  footer .mono{font-family:var(--mono)}
+.coloc-scenarios{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media (max-width:640px){.coloc-scenarios{grid-template-columns:1fr;}}
+.coloc-card{background:var(--field);border:1px solid var(--border);border-radius:var(--radius);padding:14px 15px;}
+.coloc-card .cc-h{font-size:12.5px;font-weight:600;color:var(--text-dim);margin-bottom:8px;}
+.coloc-card .cc-v{font-family:var(--font-display);font-size:15px;font-weight:600;}
 
-  @media (prefers-reduced-motion:no-preference){
-    .metric .v,.node,.chip{transition:opacity .15s ease}
-    .flash{animation:flash .5s ease}
-    @keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
-  }
+.assumptions{
+  margin-top:34px;padding-top:20px;border-top:1px solid var(--border-soft);
+}
+.assumptions h4{font-size:12.5px;color:var(--text-faint);margin:0 0 10px;font-weight:500;}
+.assumptions ul{margin:0;padding-left:18px;color:var(--text-dim);font-size:12.5px;line-height:1.8;}
 
-  /* ---- Login gate ---- */
-  #gate{
-    position:fixed;inset:0;z-index:50;background:var(--paper);
-    display:grid;place-items:center;padding:24px;
-  }
-  #gate[hidden]{display:none}
-  .gate-card{
-    width:100%;max-width:360px;background:var(--panel);border:1px solid var(--line);
-    border-radius:var(--radius);padding:28px 26px 26px;
-    box-shadow:0 1px 0 var(--line),0 12px 40px -24px rgba(20,24,31,.45);
-  }
-  .gate-brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-  .gate-brand .glyph{width:36px;height:36px;flex:0 0 36px;font-size:12px}
-  .gate-brand h1{font-size:16px}
-  .gate-brand .tagline{font-size:12px}
-  .gate-card label{display:block;font-weight:600;font-size:13px;margin:14px 0 7px}
-  .gate-card input{
-    width:100%;font-family:var(--mono);font-size:14px;color:var(--ink);
-    padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);
-  }
-  .gate-card input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);background:#fff}
-  .gate-btn{
-    width:100%;margin-top:20px;appearance:none;border:0;cursor:pointer;
-    background:var(--ink);color:#fff;font-family:var(--body);font-weight:600;font-size:14px;
-    padding:11px;border-radius:8px;transition:background .12s;
-  }
-  .gate-btn:hover{background:#000}
-  .gate-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .gate-btn[disabled]{opacity:.6;cursor:progress}
-  .gate-error{
-    display:none;margin-top:14px;font-size:12.5px;color:var(--warn);line-height:1.45;
-    border:1px solid #E9C4BF;background:#FBEDEB;border-radius:6px;padding:9px 11px;
-  }
-  .gate-error.show{display:block}
-  .gate-foot{margin-top:18px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.5}
-  body.locked{overflow:hidden}
+/* ---------- Validate table ---------- */
+.verdict-banner{
+  border-radius:var(--radius);padding:18px 20px;margin-bottom:26px;
+  display:flex;align-items:center;gap:14px;border:1px solid var(--border);
+}
+.verdict-banner .vb-icon{width:26px;height:26px;flex:none;}
+.verdict-banner .vb-title{font-family:var(--font-display);font-size:16px;font-weight:600;}
+.verdict-banner .vb-sub{font-size:12.5px;color:var(--text-dim);margin-top:2px;}
+
+.check-table{border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden;}
+.check-row{
+  display:grid;grid-template-columns:1.4fr 1fr 1fr 0.8fr;gap:10px;
+  padding:13px 16px;border-bottom:1px solid var(--border-soft);align-items:center;
+  border-left:3px solid transparent;
+}
+.check-row:last-child{border-bottom:none;}
+.check-row.head{background:var(--panel-2);font-size:11.5px;color:var(--text-faint);font-weight:500;padding:10px 16px;}
+.check-row.pass{border-left-color:var(--good);}
+.check-row.fail{border-left-color:var(--bad);}
+.check-row .cr-name{font-size:13.5px;font-weight:500;}
+.check-row .cr-name .sub{display:block;font-size:11.5px;color:var(--text-faint);font-weight:400;margin-top:2px;}
+.check-row .cr-val{font-family:var(--font-display);font-size:14px;}
+.check-row .cr-status{font-size:12px;font-weight:600;text-align:right;}
+.check-row.pass .cr-status{color:var(--good);}
+.check-row.fail .cr-status{color:var(--bad);}
+@media (max-width:640px){
+  .check-row{grid-template-columns:1fr 1fr;row-gap:4px;}
+  .check-row .cr-status{grid-column:1/3;text-align:left;}
+}
+
+footer{
+  margin-top:60px;padding-top:24px;border-top:1px solid var(--border-soft);
+  color:var(--text-faint);font-size:12px;text-align:center;line-height:1.7;
+}
 </style>
 </head>
 <body class="locked">
 
-<!-- ============ LOGIN GATE ============ -->
-<div id="gate">
-  <div class="gate-card">
-    <div class="gate-brand">
-      <div class="glyph"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMEAAADBCAIAAAD5IEPLAAAQAElEQVR4AcydB7wcZbn/553dPf2kn5ST3gghBQIJJBCkSLkCEopUQfCiXrwCwX659gpcxL+i4vVeRbFdpYgIqIg0Cb2GjgkQSO/t5LTdnfl/Z2Z3p+y8s9P2JOfz25n3ab/nmXfeeaeds0cVh51ZH5whDvPDoWeI+DhdHJoYC04XLpwmFtQDS8QCCeYvETFxqpifGIecKrx4vzgkEVSlLj962qwQgsSsaXCEKEKeRm4JQVsPlxQKSn0MURPw21rUwM+yl3RUAwYqOalA/GyJgktpXRwIoGRJskp9DEmKSVRtouBSQXCAklC/FTlAuvwQgnQ502RLdwylvqkQgsQb7MPho6pHmhJnPbKVqMOtKADYvi7BVsdqpTWGqAn4lYAa+Fn2ko5qwEAlJxWImY1IEDPYDnNxIADbmLyV1hiSVJKo2kTBpYLgACWhfitygHT5UydMtzybLcwYsr39Wmwq8LPsXR1FAW8NPiqvSzQZQiCJkVskAWmrKQDYrC7BVidrJRxD8pqwgJjFEQliBkvCIAQS476lpk6QuCYXBwJIzOlDoCccQz6UhipRtYmCjex80uCAphbkabCAWvF+9phhflT11lEqUGKPIYJBvauMzk9RwBvno/K6RJMhBJIYuUUSkLaaAoDN6hJsdUqt2GNIkp9qgcRYS00kqOUVzQ4hiBazl7ypEyRLDgFIxhEimhyg5BhvDNnxJRprJVFbxlrLRMEl8jQ4SlRBK3kaLCAoVmaLGSajK+uhBWUpnbWXMOoYIh6kU0udWagTpJsEQiDhlFskAWmrvQV45bTzlfiijqFSmHelK0r8gokEXspoMgTAjnEJtnpfbFEqSFYZBCAZR4hocgCvY6Qx5BPv5Yssp8GZBkeIwuVpsIAQFAPlQjUg3WxSwpBjiHjgVxNq4GfZSzqqAQOVnFQgfrZEwaW0Lg4EULIMzCrkGJIUk6hagoGEOaQaAmA7uwRbnbQFLUjK4o6HELh1USUIQNSoyP7kAJIwPdTzIXm8hLaWGkJQy6umPQ2OmkmCLvQGqIAQNZZc6lFQbc7geYh4UCrQtUINXKq9K1ANGKgaSAViZiMSxAy2w1wcCMA2DkSLhEAJNQ9V1WNGVmlDKhIFl3LAAUpC/VbkAOnyp06YbnlONkoFTk25jRqUpYB5yOFV9k62hhAk4yDah8NHhWMyyDnllmQZQ0dTALDdXYKtTtSKwOk7hogHfiWgBn6WvaSjGjBQyUkFYmYjEsQMtsNcHAjANg5Eqyqh7xiSVFIVLPHzVRvBrc1N82ZMnjttYkxMnTgXuMInzZ1mYP7MaXPNRhpLqzyD1ss2fdLcKhipq5RVbhOrND5UHp/hg9t9u7LOSvYU8EuCGlRZPGMIF1DllZKiWCyesnj+GccuOvPYw+PgvYef6cKiM9+76IxjF110yjFf/ug5px+zEDENeLKURb+aSfrlj5570SnHUsaZfg7xlGcce/h5J74nm8m4Op49A2yVS7DVA95yjiF5TVhAzOKIBEZwb3/+9gee0DVd44dFeODvA+I1XddnTBw7uK2lvbXZdEEZGyaBbFHNqmntLc2kpgDKMOKqfUoanULDQtN0TXvq5X9u2r7T6DXrU+rCiuCSLW0aSzmt3OIcQ5Ia5MGSAKfaG7xi9bqunh563OlUo+3lcLkPHdTW1tJUKBYnju6g8122aEJgGj8qdvXEMSNJTQFD29v8XGLqipr296eWR+ulmKkqYWw+qIiOBmrgUHia1hjCBXhMdRHzheKyF15XM2qCd7SVwuhknaFDjwtFcPUwqK2lYovSYNtBlAjTd1BrK0mFEMWiNnFMB9WksVGKIsTK1eu7enoV64fSgNU2li7BUOztjzWGJFVQLZAYa6mJBD5eT7+2YtvO3ZIed/tDANw6hySGDxk0pL2VAcSORD913GhN02gMAEhEOhKRGgxpb6MYRaBIBl3nqvGeZc+U+ido85MlsqPJAWzZ1ZJbKm6MIYmXRF2JDGwEBWua/uTLK7JZ9wVjNV0QB95GX08aM9LoayQTXJo0NzUGvZ0w3dyLGmnczmVJV5obG0lXlhXKmNQ5kgkp+VT08pvv7u7uqTA7GpQKHIoUmnJCLCBECsZQCK+0XV5Y8fbOrj30exLiwe2tXNLCwDTAEghFHDB5HI1woIdAON8qrwOmjLfzCoGdYga3tdKID10Xqvrky28YDN7SvLLhs298/MYQ1YKY9REJagT39ef/9sRyoQr/oxYCEMSBWcyZNhEXIYz9R8PCsEHtLU1NEaciKzT0UldamhtJ5AwQwihjzrQJxulMpzynMVybQ0rXX3jjrfWbt/t3Szia0F4UCSTuckt1gN8YqvYKq4mQeeWa9YVC0Yc4HMcgnlc25JzhQhh7MV8sTO4cyemy1jAKl8aZwGrriqZrkztH5QsFFEIYSWlYaGpsGNQa77reIMhms48uf81ouT6UClyqxEKahO4xBDNIXGAYgp6+/nufeN48asO4O32MEqeMHc3tmFNLW/CjiI6hgznNKQa1kv6PUDhhkYJUwMPP9dCUsaMMZYypSIjXV63esn2XEV76sKWgJAzQioQgSjLHGIoY6c5CMHDraknPvPbmrq5upvDS1A0BqBWlKGLooPahg+zbMcXxw36F0LjhL/pNcoYnOYDRivFhlPBMiBQkcoRDqAuhCEFtbZRHy2EN0dT1Qr7wh/ufgDmEdxIXo1RpPEapTWpwjCGpT7CBtCDYR2p96tUVmYx5gxaWQy8WjceJ1ZOQM8cw5ooW36uisGmcbHZbVziFDhsU9DjRHGQd3J9zq2YHhmitWL2+t7/f4ZisVAeRo1kPTsUcQzADR6oBaz796srtu8xnRaFTDhvcPritxTzmhW8Qk4FQBO8ffK0JldAa/EKUeeg4UJJQCyEGt7VSZEkVZsXko+sPP/ty2RdCUJYGZk1CECeXnvB5ccy0lVL784VHl7+uquZQrmgDG9MndGJnV7H0BXsEPS8fuMJ1XFlTKsASF7oC4VBzErJSOMhtTmGOrunjjSJtbUALLl1/aeU7G7ftCPBKbGLbgR8NauBnCamLsPPcjKQFbl0MSVd4pMbMT0+GiNa5b281niIG+Qph7EYI2ZEszT2duFSdU5M+fcIYk5CrHSNFQBGc8lqam4gJ8KmYmhobn3z5n2UxcallIse6HpzQQwuscxni3gM3aHcve0YI9opRkLwQrGKm+QhRCJzljkppH48Y0t6e4E5bcf9ANWLIIHRCkJ1iAJIPDLuizJw0jjpqDCPz9s14JrRlezpj3aecQJV0IwKjjJsgOzLePGTHB6cKssIBTI9X3lrd3dtnHeKmwn8xuK2Fx0L+tiqtEIKnRBNGj9DSeIOm6ZpJxc2XNYCq8lUpeAFMwVVqr0LT9Hsff67mtnvDwsp0MfDzRg38LFF18cZQ1Cxuf0oHDh1XRU+89IaqcoPmNtg+On3Nu/Hg2zHbvdzqGMJ+bC5L8ddtLc08E4oUb96gjdSYaUB1JBsKFLFq3aZde3g7ZgjVXvukxltq1DFEPEh30yDUH3/pjfIbNMRqfsGdzrBB7YLTgxDV5iqNoRDC8OTtupZsKiIcEhhNPt/yMLqApxBi2KA2yqZklw0CYKiM18b3LHta1+v0uwalNEYqz0du8Ti6RcKAW6dEux7yiffy1ZQlHIVi8alX/pmxnhVVkbAXrVf07JgqYw0Fd1KNDQ01nALMukI4d3kBLr4mwctAXaFsivdzMDri9VVrtu3a7WdNqIMc+JGgBn6W2Lqo81DsRLJAe4Oee/2t7h7fqyK9taVpUFvMU5JQSlfisgpq6rmQF0LUdPN14PUZ92j2lbW9uQoHDGdw36h9Uuko3V1fyDFEPHCHRpUgAHYUArBlbtDue+oFISjJqTfac6ZOFIrgx/aO0uKqqLnWEwF/Pl0hsMO8HfN3CNQKs+g55u8XGMPI2BQrwLi8e2nFqrWbt1pyektyAAmf3CIJsNSEAavts2SH+WjdqqB4t6dcCsfxxjvrqmd+rmdbmxvl1EEWIQRmXuaXzinhyiDEgG68op/U2ZE3f7/AZDLUUT/MQ2yCJyqXyzzy/Cu67+W2xzWCKN88LCACVQTXMGMoAl04V7YG+Pju6em9/+kXFYUdbzkYS96ER70dUxw/gh9FjBo2hAc8BrHDVKMpFEIIhEBQUQ1vqblY1KaMHW2ajc0xnwMpb63ZsGl7XR9MmwlTWFg1BxEFjyHiQVB8bRsEwPZzCba63HrsxdcZSeYBiqfx7okne0IR/JRdIq+JhZCX+dWTXAAXzoQwUwgR4FXDRKwQgk0YbPyKY4kI5t//7RFNYwNrhIc2QwUk7nKLJMBSEwasdtAyYAyFig/ixhaL4+nyy3xNM/5eguMYpuQYPri9ubHReMRa4gpccSXU2EhIoFNYI/PoxDEj2RxrEnpzzQYu/sIG1/aL1cu1acN6BIyhsBSh/dhUUNudl0fW7xXxqNe6qeZQrh1Wy4P7oP0mhn4Vqug4ZzIp9I8wZ5+hg1rZHKvGh5+rvKK3FHVb0t8gDn2EMN8+Ih7EyWzHQABcsi0Et3r785zRhFD3q/WKPpjHY+V0NmxQey6XrT0V6TpuOHMi85DEE61hxOZQw2tvr167Ka3bMboYSIqSWyQBlpowYLVDLT1jiGAQKjLIKTHHiyvfaWrMtbfEfCZUXZsQ5mygKNPHm+/eAypkP+s67/wtknKcJSVacnc2pL3tseWvJ2KxgwO2wXYagJZnDNUjI5sKojH39PX19Rf02jNGBFohjGE0avgQnlgGh7W2NOOGjxnBOh3A1tLUuG5LWpOQvCr6G8jtckucMOcYihPvrQYO4NVGlieM6shlM9bVNPNC5HhJgDBf5o8fNUKTv6LSdN1w0HhFL2GJq+bM2NXTM35UR1yCShxdDCqio4EaOBQD0LTGEGlB4nQ+HD6qMGkOn7t/X3//2s3b2Oth/CP5jB4+tKWpSRbCVIGDzJpEv7u7Z+fuPUccODMJiXVnl4zBN5o9BXxNNZTWGKrhFMtMQSBO6MQxHdMndDJ6Vq3b1JfPc0ZLdyqCmeeW5p22tzyUPA8UQgGmLZ0F9TMJvbFqjaqqbBr3+enwelhi9jdhwMMVQWQMJYovpYIDlISkq/fMm2UebULXtXWbt6lCFUIkJS3H6+YPD35y2aobNG7HsllM7G9Qjki6JiEUvJ/vKv8VvbmB6KKCLgZ+UaiBn2UAdIyhZFkoHXg5fFReF4nMi27ebVlGIcSaTVt5QKfJL18sz/BLOHFmPpg5ebyxdyuDBUHXZ04ehwkHkdqghUzhMHhn/SaLGXlS50g2k8Y+gPh7qlJ84jFUYSo1qAmUhKgrVRXnHH8ES0Wx9qHI5wtvr9soFOak+LSK+0cIgWLk0MHNTa7fK2puahw5dAgm0846BZgjU9m8YydPTSt0DKZzTlhsbmZFV7Mh33y5JZCUMBDoEs6YbAylU4NdKRez40e7blvo7vVbtuHBClAiLQAAEABJREFUVRHLFFEoFieM7tDK8xANRJQpprCoMqr69tqNQhgD19KwZDPZWBohQC8DP0fUwM8ycDpdSTaGvJUm2iAhxFEHzyqY34VQJoZQLxa1dzZsEilPRQrpOjuGtTaXbtBoIKIUopw8pfWuPd28RfaQFQrFow6eLUTayTxppCIdK7VFNcQdQ9QA7GwIwJZjtCaMHnHAlAlC0K3ARfDWmg2FYpGpiFODyxBHoE7AGDJ+LYxbJO7FAA2mJCN5HE7/GKqF86WV71SbhRAHTJ0wwT3pVrlRJ6hSWwq5xbJLloQBiTGSGhqgxJuHzMhI6cI4L5ozo+CdhEpxnNHWbTFu0Epy/JW39BFD2psaGwCNuKxBcTt2d/X29fl6FApFNtnXZCq9pZpKc4EFmM29syA7KOeOOw+V482bcAefrY/W4gq3/IpK+HK+u2Fzv/msKBpvLe9sJkNeQKOWbzQ7kxABqxy3Y4ge8Kxo5LDBHmU9xRT2VFV5esQxRA3ApnEJtjpii4n95MXzVZXRA/yDuUHjPl8owt9cW0upwOvHuWbUsCGAhteWQGYAQbhtZ9eOXV0BNMyvJy9ewOa7fagTuHUVSW6puPg1CAN+lqi6KpooY6gqOGp2mf+Qttbxo4aXrf5p6O71xh8UK1y7lD3TWQ8d1ArS4XKwZDMqtwKU7dD5NMeP4izq/BZH/833iRx4FaUBOy8CiHc9ZLAQDIxWwg/Tz0lHHFx1LPqw9vfnjWdFIsazIv9ShVBy2Ux7SzOggeiTNa5q266uXV3dNaOFECcdYc3BtXzZCFDLy88eM8yPykcXbh6iBmCHuwRbHavVOWIYt2Pl0CBmupurImse4mRRDgleQwj8fTjd8LwYMzAarPwdo2mt2l5ftSZkGJvfOYJpmPRAEiS3SAIsNWHAaidbumgQQIkwxBiynUsx6a6sV/ShOLkW0hVu0BhMofxrOXG6aWspPR+igVgrIqx9N0+E+pxfahYU2Nfff/iBM4I89q6NAQDsGlwC6hBjCC8bxANbTtga2zGcV1SRxsRbazcaN2gc7EwjQempE0g9NE0f0t5KakamASEQUUoDwhmoC8d/vruOpQNBTWqYOXn82JFMRX5ubATws9TSxQyrReu1B44hagDekDRlHkxHoxNKsVjk4pprVbpeHlujboYf12E8m4YBV0ADESUm2vFgDaDtu7p27t4TlYHH1t4QygJe7cDKrgIQgLcA+RjycfZRefmiyM2NDVOsb+KNEsU78NUbt2jmT5Q429caJSOGDLJGoTEJmUZElDQtBxoxkFHVd9ZvzmTkHSshnTJ2NB0iMUZVs6dA1Ci3PwTA1rkEW62EvS8jHjgDk7ZVVZx93BEx+ponRDwremfDZna5ddy7S6FO4NZVSVz6tJlvykTZZDVQYirroq0phsG3ZceunV2RJyFFEXTF2ccfSbco1k/tjbD8PEvCgEdZX9HvcKEGUN+8SseQQVPHW39BHDmTUMXaTVuFsPa7Mzxs3cZdmDOu3CYeU1mKvM7win7dxshh5YCp48d0DBls/CECdZSVe2ftKgABSAtxjyE8gdfZR+V1iSYbv+5+5LwDeGEULc7hTezqjZtRcPSzjARmGuvPBT1j0BIZQzhEIqw47+nt5Y6sIkZtFAqFI+fNEsIqJGo0/mnsKTgAZCW4hJLOvXKPIbdNqdsRMbZj2Nzpk4SI3VlGoW+u3lAoFhlDIHypmqabf/rOKdEg8XysgnDAzWMKFqmBE5nvK/rgQIdV8DN3+mTpDZrDtarJngZV6gFROMbQANVgpFk4Z0axqCXaQONbxvSN23aoqmMTajGym7OZTGutb6LBATeGRS0+l934PaHyb0y7DGEF40DgrpPOCR+RsqexcyqUCKAiShsBOyBUvJTYxwAhUIa2t+0/cZyPPaKKo3bVuk2FojEVhQ/l1VjNYcetH27hORltVjE1mWtwCmMe3H/SuKHmN6nXcLbNRq/aUjqtCJzmGMIf2LkRgC2n2BJCnLz4EO5BUuAUCg8bJRfXPvRMQqoq2sL9/XVbczMjicHhQ+RW4QMzz4S27XT+yx+3U3hJiEwm4/cy35eC3QR8TRGV0ICIQZZ7wv+1YJGEWZYKHNTaPLnT/O9MYYJq+ahCrN3MDRov80v8wRFDjC8BMlyM491Y+3xE2cZjax+znypjPhNKOglVmHWdLuLSvqKob4OeA3YOBGDLNVvmPGR7EQxsOY0WhMBgEkKcuHBean0NpRB9ff28iIWZyQBFALIZdXCb8Q/qyoNE6itMD5yzmYzUqWwgL1dCO3YH/Z5Q2TfsWlXFiYvmCWHWIQ0q9arUHscQh9M5huLER6pz9PAhB82YEimkprMQ4u11mzih4MnuZOkLTBzZbGHwbqnECuOaXTFCiKxoqxrkxfO1t1dXWRIoYFSUg/afOnr4UAkL2wEkxkjqNGicYyhS8pDOrhoXzp7RG/ptdsgEihC6pvEGzex5aVBGVdtbI38TDSEESklNw56evu7ePrOZ5qK3t6++N2jsGWCXjABsOXzLGkMEg/BRcTxHDRsyZ9pEIUJOBNFSvLV2Q74gvUFjKuHiRojIqYXCy/w2Jhvfaiz9iiiv6H15fJTC+KG76DS3Fanue4ockcAYqlNN0AK7GF7R0zG2nGJLiHyhsGHrdl9+BhCpWms9E8LHF1agNVycDmhg3tnVvW1nPb7oXmF+Fap61CGzFfuH/gS2HL/lokEA8ckYQ/GD5ZHempoaGqaH/7dwcl6ZhRs0XuZj9X2+PHxwu3UhL/AIDWF6c4c/fLDxL6eq4zjNvbN+UyZTpz7kkaM+fUInXVedOr6GPQPseJdgq6O06rb9jiKEEKcfc1g2m3Ho0m5KbtCYKtjTPFAgnzkkWEeAMGMIh4SJpxJJG+YdXXt4LFRRpt8QIpvNnn7sQiGoI4WdnX6FJmPqY4hNBSZ3ecE0MHPyeOPlW1lTjzUz/5pNW1SV7nbRD2pr9hbkstcWGC7coHn8Mqr65pr1HmX6ovFVJBPowHSYXR2BAFIgTncM+de0+MCZhXwxhWKDKXQ9ny+s22x+wUO5EPb0YPO5ondkBVM5rMYUoCiQQOVQK739/WH+bMMZEq/Ny/zFByX86jROiybsCsodZGvit9IdQz51jB42lGdCQghF+FjTVJFCUd54Z21RK41X5o/B4R4qBpdhEhvDiFMYntYy2St6aMJAp9OEEIHPisLw1NdHTYle94zzCu1hs/fTNZ2+qGjq2DCfFW3atlOYTwhVlbdjxp9tMJiSJLXC21qaVKFaA2j3HuObFZNwRohlWzT9sDnh//Cjilt3ahCAU5O0nXwMURDwr6O9uZmHHP62+miF8dh6Y9H8xZKh7W3sda7DRLIp0AqHynqdLoRYVdfbsVLPuHp1zrRJ7eHeFpeirRUcwGobS5dgKNL4JB9D0iro65OOMF/RJ9uF0gS+Bm7Q+vPm36ApzBy+LrGVFuHOru6tO9J4RS+tgz0NHGah8AThpMXz6VJln/uJ+p0N3g1wb6rTqittTU083mAacKoHoK0KsWbjViYhYZ5BhUghp0UiFMGzolXrvF9qlkKCmhS6Mn3C2Dbz7whq+pYcXDsHAZQsKa0gBErseYhgIClGV4QQ7z10bkaNzS9hDqPmqkjXKSCMb3gfIQzf5sYGXpAZrXp9dBlxRlXfe+iBQph1yJz89VJOf/eI2nrt446hgxbMmm4UE2OTjbC4H13RitrYkcO3lf/Xrp5SB1o8m7fvHDtymJbsH1VLto1CgcRoduOC2TM6hob4viJogIQpDTXsoMQUbwzZ8SWaygoLUJRDZ03v68tX1APZaGjIdXawm/Wunp508/JWrrc/Dzkp0mUOydbX13/orP2CnOl8YHsgAFtOo+UljDqGiAeSSsoWnqvOs35PyDx6JN51UOuKrmsTR3fkskz8YtvOLs14rlAuK0FCaxLatquLM0kumyUFiRLwVYeGKNLsTDqW7q2O99MEcPq5x9VFHUOh8rxn3ixV5V7Y3OhQEYmd6C7AENKVMSOGajyRUpSipnHtIhSRkJ0BxODsL+S7e3uh0jRtzIhhKGWPxPCJAuoGoSIEnZpR33Ow82W+IzAsjSMkWpMEwBsTaQz5xJf4sABTaGzI7T9p3MDfjpFc140X3ZlMhtkCkaX1Z8uaucPRxAb3ejt27xHln0xGnT6hk3SxCeMH6grdSye7GOh8YKsQgC3XtRVpDPlVQqmgbKGTT1k8v6EhW1YMyLpcQC6XGz96BNMDZZCYZb5Q3LXH+DKyJKOISagvzyTUByeAluV4zpi5HI1kKJcehaWhIXfKkYdaZUSJS+grLTXkGCIe1C5iaHvrgftNNi5Cavum4UFRwGTSda3TOMW47uo5ozIVMYuYLnEWDD7Crd/xqOw2GrquG+ni36BRN4hVkqbTyTwAKwW7aBBAyZLSCkIgJQszhuTxVZaFc2YUCkW6OPFFiLRimYFJaOKYDo+VPc1VUVePcR3DaPBYQ4qFYtH330BPHDOSpCFJUnMTCt1LJ9PVxgWDaxe4hNQyBhPpsZ8xUi1ws3eYz4TYQkW4DXWSHAXoujZ+1HAuU4zsjnSWuGXHLs5HqKMOI8t/83bjzYZFBYkFxIyqjh81Qo88FVE3sGhiLYVC9gWz9+sI86woVgZHkLxULECpMYZwAQ7CwKbx6AJ3EehUF6PObaB5r6Tz48lAd6PcY05FIkpt1gAyb8dKV0I2M0MSUkUf0zFMzWS4HbRNA9NiQ3Tl0Nn7lbPR76AspbOGENTmCjiXyeP9LE0NDQdxJWR1fO28yTwoADg4powd3ZAzLuSFoHcdhnKTCxr2e9QbNMh4w1o9vcEqFMGyIZuN+FVu7rqhiAE42BhdP2i/KXQ79xAxOBKFmAVUGALGUMXH0XAHVwxCCF7RZ7MZHmBUlPVqUINNjWBcRPPs2JgXbL2rRXmFotbV3SuMfz7kMskEjgV2E7djTGBeZnKWw/Dp7BguVDXEVEQYKEcmXrNRdHjdXubLS62y+I4hvECErWxpapw5eZxuPtmLEJaGKzuYixJVFZDRrSx9gQM3+cLw8rX7KFUheCaEQYhyGL0CUJkQ5lQEMwVQhqmr/8JRgK5rdDudn2pWEoAIlJ4xRDCQxMstRx8yO5vhyZ6QRKakpgBgkxlCLpedbH4xqBBB2XVdzxcKu7t7mDmYY2wOSQu3fMH/dswZIcxhRAG5Gs+KjFKdgXHacABHpBCCqejo+XMcuno2yQ6qMnjGUJU9hGLEkEHGfSaegk99QOnA5kYAnECMhzR0JbCNfi3LgTdowtzrwcMIK25bd+5i5FmBBqWR0Fh7PniCzo5huv8NGmHAE5SWKCBaOHcmu4BGGohTqnMMyeOxAEmNh8ycyuMKibG+ao7Ccdxds89D5GE0aLrWHe5v413PhNh2IE/BpEUZ2axxUS/3SmaRF1AoFA6ZOS0ZO9EkADQkkButMYQdRA4mYHBby/yZ0zhezccAOCgAABAASURBVMMbRR3gLa0kk3TC6A7rdix8VmN2Yf4yHs/5B1kDcrv5XTAMO3+nKm1DNksxVVNRqdQq9xQVgn6Yf8D0weafQKXIa1OxEcCWnS2jbY0hoxXvwyt6JoN63Y5ROpBUpml6Z8dwlhK7j5oxwQ3anh7jBs3HzF0yU4qi80yoq/LNivICnAzMcJ0dwzQGIDAMhAGjlfQDDZCzCKEyBUpf5ssDyxbYQVmKvmYMyeOxADkpc8CsqRP0gbsdoxpgFMTBN2Xc6GyGmyeFkWGown2EUHjkg6+xv1lVAUYcBD+KkM9WrjCh4G1c3k4ZN4bCXLYkAtsKQjDousaOYHeE8PW41EpQyw4dY4ilH2oF020nLpzX2JCj4RefWOcqAAHYnEx+3A0hx8jeny9Yv+JYmjJgKYNpCGvIa6ZykLFmGLGa3DmKKYHpjPZAgk5obGg4cdEhNFLLS3+DEHTyMVQreFBr84JZ0+syCVE6kBeg67r1ZiNGlxHCEx0e/GRUY9udw4g2kxBXQvBbY0Jego+FEIbgmBFD0+mTwB6oTq/rGm/Qqr8XoNqzrCEBKEsJ1kY/esNhBl6tV+btWGGAXtF7q8nlspPGjPQWFFrWdZ3brq5u42W+J4iX/L6v6D1uAeKkzlGUF+BQ28Tmgtp+Tg8ODVEoFBxv0JzW6O0oBbjHEJEgRMZhg9oWzZlB4YoI4R3JxVUAAnDFMwLGdgznXObSRhGMshVly46dTBuVOCYh2sYbfl0XCbYqm8mMHTk8namIgiKAzRKL5u4/bHB7iCBvr9ohWIAt1265x1Bt/5IHZzHjXkyUxHRWlA5qcdFVxh1Qsgt5SIwpp7f0rw51M2++UPCdnGpV5LJrutbJGzQR9nrcFYxgVsI6FoQQ6oIDzD/JksaTAEjNMQyOMeTL7EfJdfS8GVPqf6j5F8TJggKEUIQQftWF1QkhrL9B08wRJIz7tT0ZVRWKCEtR5ScUwU9jLjfJfP1SZQ9UsLkg0KWmUde1eftPpX9qevo7xCrAHENEAn9WH+3xhx3Y1NhgzEM+xrgqVwEIwJ/KOFPoOrvK3xxaC4Mx8fT0sOM5qfX157t6emmEJvB3tNg42ypi4O/PFCHUpsbG4w+b519cwLMK+htIwgLV0f/evrmxYe60SVpRC6gnMGV8o67rDKBsxhz38WnsSFVVrZf5qhA8E8IgFMEyObhco1QKDksVc/9V0+uaVpy732R2k9tGAuDWpSSpkYYCx+7igw7IZbM0jAJ0jtuUYNTBRlowuKs/7Jhp43mIZ1jYPanAmH66e7k22mP+7VgqG0N91DZtfCcFuzbL2jjfJTEl+JrDKxV2TS6bWRz+/6BZ3KXskValyGjH9OC2loVz9uMUUCgWTBQLxWQoFC2imkuS8naaB4D9+by5LKS13LB1+9pNWxlMaRFWeEYMGUzZheAuKoTtgZpdVHHIF4oL5+zPziqPCHZ2uelZyy0eR7dIGCjpoo0hJvyrf377tTfffs0v6oHbrvmFFNf+4val1/3PqZ/8xpJPfZNlaHz91E9KcOXXT73y60s++Y2Tr/jq8R//Ig3E0PjaqVcGYQlJr/za0ut+ci1b9PNbr5HhJqfplmt+DpyamO1rf37r1Tfdws4yr8jsnV3a52mvoo0hpuhCscjMnwKKGkQOHiSusoLA4VU5xPdqI+xEmGdm4PLEF9E339FXQb1kuRWKRXZW0GhhaIEgD5nNGxZtDPmPa1kumZ4agG1FALacUgtOICGTWyQBlpowYLX3/WXqpUIIvBseaQz5xHv59hVZXioWsBfrJDuwC0AAtpxGC0IgZwo0ysP8LZHGkD9FNK23eq8cjW1AvetRaj04AzuFhCDQRWKUhoUcQ8QDCXlINQQgpHN8N3IASbzcIgmw1IQBq51smRKNvAgSALm9DpaQY6gOmUtPTtJllncfFpButkhsZAd2CAKw5YFoxUxIGJAWGGYMBcVLiT0GFwcC8Hjss2LqpUII6rG9closIE7O2mHBY4h4ECezHQMBsOU6tcgBJORyiyTAUhMGrHayZUo08iJIAOT2elqCx1B6mW2memxqPTjtihO1KA3YFC7BVte1FTMnYaB2ZQFjKFR8jQwuDgRQIyJlMwlBHNKYYXFSJY2Rl4oFxOGPEOY7hogHcTLbMRAAW65TixzAjxw18LPU0hEGanmFsbtoEECYsPA+EILw/nXx9B1D9chUj02tB2dK205pwCZzCba6rq2YOQkDESrzjCGCQYR4f1cXBwLwd6yXNmZCwkC9ikqbV14qFhAnX5ww5xiKEx+nzhRiKBX4EaEGfpaB07kKQADpJocQpMsZn805huKz2JFsGnDJtpBSy5UgJU5o0qCFA0BWgkso6eq6IiGIk4IwECfSGkMEgzjxrhgXBwJw2WsIyc0xExIGkqcfGAZ5qXJLYGWEgUCXQCNjKFF8IHnqRkoFfrSogZ9l4HSuAhBAuskhBOlypsDGGEqBperd1764qZLtTKNUOICdwCXY6vq1SAji8McMc6ZKPIaoAdiUCMCWU2rBCSRkcoskwFITBqz2vr9MvVQIQQobnngMpVBDTQr5pmIBNQnq50B2YPMjAFtOowUhkDMFGuVhqVmSjSFv9V45tTLTJ6pHqfXgDNxyEoJAF4kxZpgPW7r/a8EnQVIVmwqqWIT5l4R+lirXagVhoFpvaIQQqjDJDanWR0pTK1BRhAiThQRA2Ud/KA0oSrJ5yN44yIAt0xJCzJ468VMXnrn0/NOuOO/UxlzY/9R0wcnHLj1vydLzlxw4fQo8Fs454Sh4lp5/2tLzTvuXRfONq3jLIFlmVPXDS060Qq4497RjFhxUcfzI6Sddcd5pS88/3YMrzz/90rNOnjN9Mp4Uz1IKthXYZl0RSktT06c+9IGlHzzdwsfPfn82k7FdFKUxl7vc2K7Trvzg6Re9/3hVFU6rb7tjyODPfvjcpeef8akLzzp6/oEuH90lhRYIA6HdQzjGGkOuGhCAf6qtO3dfdu5pn7norK9fdvF+E8fW2DEmBx39xY+d/5kPnXXVJR/sy+dNnbG44JTjP3vROZ+7+JzPXHT21Uv/1fiyJiHdB0KIzpHDvvbvF3724nM+9+FzPnPxWcctnIdSMYdeNqt+4WMXsG8+9+Fznfjsh8/54sc+dNcN37zlui8fvP80IaU36il/2HZgSLOmTvzSv53/2YvhPI/lt678yIzJ44WwWfLFgirUz3/k/M9cfO61n/7YwTOnC2FbDQrXx/hOgcsvOOPKCz9AqZecefJba9YLYfqTELicQwoxw7zs0ICyNuIYIhKUg4PXuq6v37LtiZde7e/v375913GHzUMTHMKJ5OwTjmxuaCwUC+s2bX53wyZh/hCVLxSMP3DNG+uRQ4decvr7zO7E4gMhlH8/e0mxqFkh+UK+aHx5dKn0n9x2z58febKvt6e/v8+FfL6vr7dYLBwyc+rdP7z6iINmC+GXpETjyovfqcccsW1Hl5mxn2J37dx9zPwDnZusafr3f3vHc6+tJGtXV/d1n/63plzWxVISSKAzSy2eN/uS097X39vLJHf9zb9bvXGzk63kO/ArqnMljf6dDa5w87B2a7zSPQ8/0dzUoun6mccdqfruEkdELpv9xDmn6pqWyWZ/+9cHevr6fHuNPX3u+4412dh3jnizKYSYOGbUh049PqC6z1z/k2///PdfvvGXX/lxCbR/8Ls7V65e39DQwIHV09P9u+9Ys5EjBd0HzCzmwhZam5uWHL2I1E1NzQ8+vbyxsZFRe/p7F6MxPUsLxC/e8LNcLsuENG3c2EvPXlIyVK0YcF/994t7+/roumdefuM3d99f6go7Z1VMkIIwEOQR3QYhiHQ9ZPhXEiGAiujfoMsefGZ5T28PXTZ5XOeRB3Nk+3uixXnCqI6J4zrp/Z7evl/cea/ul0FwhAoxcmj78YsOFo79C4MF+vq0Yw4v5AucuYQQiJa+skSzdeeum+74y6//fP+v7imB9vd+ffsJl37+E9+6oSdfEELp7e7+9MVn41wJlDWEECcsOmTE0CE4bNq67ds//U2hWGSI7zdx/KK5M4WjSNiW//OtG37zB7Yin89/9MyTpowbI4TDwxz4bOJVl5w3dVynUERDQ+NV3/9fZjbD4tchJK2FmGFeWmiAV6twyFXpqhVEgmp9LQ1dtn7L9r898ayma4V8/6lHLfIdFhYNzsctPKhnT7cQ4pW3392yY7elN5Z2dvW1N99R1Qwdes0Vl1R9Q4rh29bcdMHJxxWKhUwms3bz1ozqv41UQkYnNPO71e58+PHrb741m81lVPXwuTOnsSOFMHjtGpAQAA0DkLz/6CN6e3tp3HrfP1a8u+6+x5/BrGnaWSceRSLDqfzB56Y7/trV08uJu6W58QdXXZbNZkwjEUARQkwbP/bj556uFYuZbOa/b7nz9VWriTJ99t7CKK2SHQGURP/+LRmlKzte6lI2sPG/uPO+hlwDFzLv8dxZlH3Mtc4+u/Dk43VFb2xs+ss/njCVrgU7QwjlWz/7vz29PQzKkSOGHTLT+71xQghux0aNGMY0wCX5nQ89xmnRxRJC+POyp9j9ODY0Ni6YvZ9gcwFyCS4BXUMuu2DWflTe1tb2x/sfoYYbf/8nVaiM4yMPse8H8bSwbdfu06/8kqIIragdMGXiiQvnE6KUf6j8B1ddXsj3Qfj2+k1X//S39CHHTNkeaU2pIFJITWcvYYgx5ApBADXT2A70zorVawuaRp92DB10zPy5wjyqbQ+zJYRYdOD+U8Ybs3d3d/fdjzyNxrRwRiqthRGob9m++97Hn4Wtp7v7svOWmMqSAyu6+5z3HcOVMofzd35+a1dXDxr04YH/pm07NmzZxpBVNL2poSF4g4UQF55y3KD2Vvb9pi3b3lq3kYpXvru2lxOiIoYPbjvioFn4eAp48931XNdns1mdC+3/vGLimA7Lh+VFS06YNXWyogusX7rhp0ZgcAWGh+8nZpiXCxrg1dpyiDFkO8dpsUu27+q6++HHmZaFrnz87FPY/W4iCsRLP/HwBX2cDhT9gWeWb9jKLuQ4ZHe4fRXR1JD99d335xpyqqpy57Jo7gH0u+VE4/iFB4/tGIZY0JTbHnhEqIwlY+ihCY/mxsbB7S2wKUKheMGqFGyUWmqWVw3Z7MWn/UsxX1AzmZ/cehdXcgy+nV3d9z76FCdToSs8j2B4ld1La7btiz+4ic1EFnrxUx86W5BGiFHDhy49/wN9/X1CFb+6++/Lnn9ZM8+wuO0D8Nl8qlL5SOENQZb6Bhuuu/nWIj9aceFBc0YMGSSEKPuXOIUQxy08uFAsNjU23nLvQ4ypsoN3TZc+++qK+596vqjrff15bvItZxgac7nvfPpjiq5wBP/lkSe27thF2xtfS1ZVMX/W9KFDhkDLjPjY8lfZ32ZQqVSzbS9GDh8ysXMM59be/vyPb7mLKMvGhXORc5WmLTx4TufI4aKyxaYZtx1dXZyj5aPLAAANMElEQVSnmpqbsJx1wtEnLT6Mofa9z31icFsLh5lQM9//1W0x6rfoqw8+Ux99YW+03fKwyMeQKwQBeGLDikS+u2Hz6k1b6DgurRfMnoHGGUz/Hn3I3LEdwzOqykH80opVQsi/m5dDW1F++Ns7W1taFEVbPG/2mBHDhHn/NW/GlI6hQ9mde3p6v/aTXztTyNoEquyxMnAbPXzYNy+7ZM+ePQyde5Y9vXn7TspG7wvCP3D8kdwuQPDyire5o7TcCHlzzfo3126AhLuEhXNn6vZkZrkobOk9jzxx32PP6IrCretVH73gqPkHHjpnf+pXhLjgc9/csmMXPCXvsCvIQFjvID9oQJBHySYfQyWHNFb0lqL8/fHnGnINmqZdctqJGcGxR4HA4BdC/Otp/8KVgVDVPz38mLHbmG0Mi+8Hd/HSyrdXrVmvKmpTQ+6LH/sgRzC4/INnsDMyaub+p5/fumOnb7BHOaS9tbNjxNiOEeNGdsyeOolXEH/6/jfGjTTOhl29/d/71e3mXqRO4AlV2NPcWF148glC4Q684c4HHqUyxfFz77KnGhsamI0+9P4TMkI4LDQh1Pvzhf/8wU+NbdWVsSOG/Oyrn+ZRBPU/+sIrT778upkaz70Oo9SAIvzGkDcEOYAhlElVxe33L+MIE4pYOPcA871HKVAI0dbcvGDuzEKxwAj7zi9vLRnkKzqXs9hnvvsTXSicIU86alHHsMFMb0cvOJCRxKXSzX+8F1o5QcmCz5xpk5/87Y3LfvH/Hr35e3//3+986/JLhg1u0xVl046u9136+bfXblDkpxOhKAsOmDFuzEhd17bt3HXHg4/q5tFisQuh/Omhx4s6NxPikAP2mzVtEp1gmZzLdZu2fvfmWzLZjBXKcmfXniu+fUOhWHS6hWtTeDjHml5RmNxjiEhQM0F0B03TX1u1+rnXVzLb5/P5YxbMpbMqNIfOntGoGpVs2bn73XWbK/qABnvr0RdeXb1pKw2lWFhyzCJujnp7+xhSDz39wrOvrTD0AfGmCZ9Hnn/54i9czYySzxc4f3X39j62/LXLrv7hsf/6SZ5smV7SBeEnHXlYVxdnPeX+J5/v6u52urKBK1evfXz565RUKBROOvJQOsF0oIuB2WSE6vp/33YXDx7xF0I0Nzd995e3Wv93puQRagUhCOVawwkaYDu5BFvtaBl7ziF6msQDjzKmyKnqjvuXNTTk+vP5k49cWGFh5rjivCWKUDjTcXHAIGPfVKwBDXr8l3fe29jUxEyx9LzTjzvsYC4xWtvabvz9neyPgEDDVP6Q68FnXvzh7+60ZgKe9Lz61jt/WfZUT1+/rmvs4rKjz7qlqfG9Cw/miqe1tfUvy55szDU05nJO5DLZ2/72YGNjI4fNCYcvMCn8+/OGX/+hqalJ0/V1m7f8/q8P6uE3wCStz4JSQW1u1Xbx+ntl2zNWSwiFmaOhoSGjZnjFPXPKeGH8KFPGjT507ixGWKFY+M2fHwjebc7MdPRv//LQ2o2bNE1rbmxozGW4H16zftNzr63E5PQMbjNJfOfmW+/6x5MqJxRNu+zc0y5ecmLNMoRQTnnPQi7AVSF6e3pu+PwnXrj1J8tv+x8PvnX5h5mHeAwxpXP0/Fn7CcEJ0Kcczl+MRQy9vf19/fZvK6AJgfT2VCwmcwwRCUIUm8SF/frmmnVPvfgqUw7D6OL3n4CG4+2IA2f39/VpuvbKW6tffZuH+hGSdPf23PTHv/KuQAhj3whFLL3uRu6xI1CYrlSy9OofcmNVKBZ7+/q+cumFC+fun1HNzjEd/Bbi3H8xHmYK85aQt8U8KKpGLpODHB9w6Vmn0K6momyUgg8orWgNLBgAwM7pEmy1X8u3m4gHfu7xdSXC6391uyJEf77/mMMOpt/p2TOOO5Kpnnnkrgcf5WQUKQPh9zzyFHdz7HuwdvO2JxijkShwpjSdJ9L6R75yfV+hyE7UitpNX//cxM5R8GP3RTajzpw6kWMAK9MM41gGrPgwGx1+0Nz2luYATtwiwiw9Ykwt98icKhcTDtLI8Y7Y2k2679lX/9nda8zVIwa1TZ/Qye30gTOm0Ms85H3omZcEO7A2TcWDo1pfu2nLj2/504ZtO7Z17bnpjj9rmqGseIRvELZx2/aTPv4fO/d0027MZW+5/ivjRo0QwqcmIcR57zumuaFBCIXXuidc+h/v/ehnZTj+0s9v2dWlK3pzY3be/tMgd1UVv8uJdDHFFKABMYONMN95yDCk96FAYPDRfXt6e5955bVsJsO4ueycJR847khV4ZmIzjnujXfCn8ggBCXOq3/2u8UXXXnY+Zf97I9/NVSRPiUaI4by1mzccuW1PxIZlYEztLX5+/9xGYPJsLk/Dbnspz50tq5r2YaGW/760Mp313KalmDtynfXPPjkc0y6cCy94EyGHY19BY7NN0vyyqayxkJ12OPEO8J9m15OIcTP/vAXlpy2jp4/57RjDy8U8kLN/Pi2u3zj66ikNGAnMARmsYefffGq7/20ublZVdWDZ0z/0ReupFpgOyrK9PGdnaNG4syN/c//dC/3ksx/Mui6/os77zUfJOpHzJs7pfLLJDAaOVlFBWEgalSwP4Qg2Mffao0hgoG/R7paOnrZ8lfe3biZfm/m1WZri3FJoYrnX3vTs5/keetbKrv81r89fP3NtwpV1bTCsYce+LkPn8N4qtRDnScu5rHQbuaqZ15dsavL9Vio4mY2jFLZwFfeXPXKW6sYc/l8/5HzZpPCuIQwjKZXtEXMMG8SaIBXG0e2xlCcyFoxFAh8vLSi/vcnnudkZtnYPU+/+NrWndJ3Q0aPG6722pBCf8ph7gBXaQjAdmBnf/83f1j2witcpemafuUFZ516tPF7rpZHQy539gnvgbapqfnuhx6zlFVLCIGtvuuBR3PZXF9//xnHH6Uap0rbxKUSQsmbFWMTua4gi82PAGw5aosxlCheki+Ikx6899Gn29rbs9lcJpPJNWRv+L87JTy2OqOq1o2PiNLFPDHK8pPJqIItNdkoDZhNc+ESTA2nWd5k5S/+wrWvvrU6l8vmC/3//ZVPHnXIHO4oVSGOXXDg1Iljc9lsb2/PvU88a4UEL4UQDzz9QktLM+NvwawZs6dOhqcSIuAVgjK5TKRSY4qq2FwNSgUuVWIhBcJyzyauJSyBrnA6e/a1FR/50n9dce2Prrjmxku/8f1HX6j5WzL6d39129L/uvHya374zvpQL0Osev72+HOf+PYNBN5638PMHJYy5JKz7Ue+ct2V1/146TU//LevfpdxwOBiilq9YfPHvnI9xV/8pet27OryY/PuGFLz3uPCq7619JofXX71D7p7euGpBNJ+c/W6T3zje0uv/dFXb7zZG1zyk6hL1tAraEBo9zCOqY8hCgR+qVED08L76j8+9PgdDzx6x4OP3vXwE1wxmOqgxcPPvIj/H+5ftmO3727zj/3nO2tu//sjf3zwseVvvGl4lAsw2sbx7pJNpb1gx6/bvPX2+/5B3j8+8OiDTy+3bC+/uYoy0PzjuZcsjWMJIXAoyk2OHF6h3PHAstv+9vDK1evKamNNoq07dt5238O8C/rro08jGtq6f6gTpJAm3TGUTk1Vm5UGLRzApnYJtrp+LRKCOPyEgTiR3hibxm55faLL6Y4hef6YNRMG5LT7liX1UiEEaWwkNCANpmqOtMYQBYJqfvPdpcTi510fnasABJBSohINhKAk+KwCjT7+dVRRCkgzQVpjKM2aylxpbCocoMxojmhbGIgW2UGcTDHDfFKlx+RDrijJxxAFAl/y2LsMQiDh3LfU1AnSrQlCkAYnNMBmcgm2OlGrfn9vT7UgUXHJgskObA4EYMtptGoR1rKnUUNIDkoBIZ2juSWfh6LlC+Fdj02tB2fgppAQBLpIjDHDfNjSY/IhN1QkAPHPZQQDg8nnI7f4ONsqwoAtx2+lRCMvgARAbt+7FkoDdg0uwVbHb0EISvHx5iE7vkRTWWEBFXHgG2QHdl4EYMsD0YqZkDCQboEQgnQ5vWzxxpCXJQ059U2FEKRRmpdDTosFePxDiTHDvNzQAK82XdmbIOoYIh5IapJbJAGWmjBgtZMtU6KRF0ECILfvXYu3NK+cuDoIgZcm0hjyiffy7S2Z0oCd3SXY6rq2YuYkDKRbGYQgXU4pW6QxJGWp9fpSHmhEBlj3KZN8r2ABcYqNGeZNBQ3watOVpQlCjiHigV9NqIGfpZaOMFDLK4zdRYMAwoSF94EQhPcfWE9XaQgg3QIgBFLOMGMoKF5KPDAGSgN2Lpdgq+vXIiGIw08YiBMpj0mdUJ7KYQkzhhzunmbMmgkDHq59VpSXKrcEbgxhINAlpBEaENI5plutBHqNZ4zEA7/kqIGfZeB0rgIQQLrJIQTpckrYkqqpEyRliRZPQhD4ztW0R2MN450GLRzAzuYSbHX9WiQEcfhjhvmkspnslo9bfBW0oHZ8rHNZKObq3ISBav2+qUm9VAhBGhsLDUiDSc4RmAAjKAf/fwAAAP//2BSB6gAAAAZJREFUAwBXYy31R9R1cAAAAABJRU5ErkJggg==" alt="VMRay logo" /></div>
-      <div>
-        <h1>Sizing Estimator</h1>
-        <p class="tagline">Sign in to continue.</p>
-      </div>
+<div id="login-gate">
+  <form class="login-card" id="login-form" autocomplete="off">
+    <svg class="mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,6 88,50 50,94" fill="var(--accent-deep)"/>
+      <polygon points="50,6 12,50 50,94" fill="var(--accent-2)"/>
+      <polygon points="50,6 69,50 50,94" fill="var(--accent)" opacity="0.9"/>
+      <polygon points="50,6 31,50 50,94" fill="var(--accent)" opacity="0.55"/>
+    </svg>
+    <span class="word">VMRAY</span>
+    <h2>Sign in to Hardware Sizing</h2>
+    <div class="login-error" id="login-error">Incorrect username or password.</div>
+    <div class="field">
+      <label for="login-user">Username</label>
+      <input type="text" id="login-user" autocomplete="username" />
     </div>
-    <form id="gateForm" autocomplete="off">
-      <label for="gUser">Username</label>
-      <input id="gUser" type="text" autocomplete="username" spellcheck="false" autocapitalize="none" required />
-      <label for="gPass">Password</label>
-      <input id="gPass" type="password" autocomplete="current-password" required />
-      <button class="gate-btn" type="submit" id="gateBtn">Sign in</button>
-      <p class="gate-error" id="gateError">Incorrect username or password. Check your entry and try again.</p>
-    </form>
-    <p class="gate-foot">Access is checked in your browser against a stored hash.</p>
-  </div>
+    <div class="field">
+      <label for="login-pass">Password</label>
+      <input type="password" id="login-pass" autocomplete="current-password" />
+    </div>
+    <button type="submit" class="btn-primary">Sign in</button>
+    <div class="login-note">Access is limited to those with the shared credentials for this tool.</div>
+  </form>
 </div>
 
-<div class="wrap" hidden>
+<div class="page">
 
-  <header class="masthead">
-    <div class="brand">
-      <div class="glyph"><img src="data:image/png;base64,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" alt="VMRay logo" /></div>
-      <div>
-        <h1>On-Prem Hardware Sizing <span class="light">Estimator</span></h1>
-        <p class="tagline">Platform Server + Worker capacity from your submission volume.</p>
-      </div>
-    </div>
-    <p class="disclaimer">Rough first estimate only. Confirm against an official VMRay sizing review before purchasing.</p>
+  <header class="hero">
+    <svg class="mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,6 88,50 50,94" fill="var(--accent-deep)"/>
+      <polygon points="50,6 12,50 50,94" fill="var(--accent-2)"/>
+      <polygon points="50,6 69,50 50,94" fill="var(--accent)" opacity="0.9"/>
+      <polygon points="50,6 31,50 50,94" fill="var(--accent)" opacity="0.55"/>
+    </svg>
+    <div class="word">VMRAY</div>
+    <h1>On-Prem Hardware Sizing</h1>
+    <p>A first-pass estimate for Platform Server and Platform Worker hardware, straight from VMRay's sizing model.</p>
   </header>
 
-  <!-- ============ CHECK YOUR SPECS ============ -->
-  <section class="panel specs-panel" aria-label="Check your specs">
-    <div class="panel-hd"><h2>Check Your Specs</h2><span class="idx" id="specsChipWrap"></span></div>
-    <div class="specs-body">
-      <div class="specs-inputs">
-        <div class="field">
-          <label for="specsCpu">Available CPU cores</label>
-          <input type="number" id="specsCpu" min="0" step="1" value="32" inputmode="numeric" />
-        </div>
-        <div class="field">
-          <label for="specsRam">Available RAM</label>
-          <div class="with-unit">
-            <input type="number" id="specsRam" min="0" step="1" value="128" inputmode="numeric" />
-            <span class="unit">GB</span>
-          </div>
-        </div>
-        <div class="field" style="border-bottom:0">
-          <span class="flabel">Heavy Web Analysis load</span>
-          <div class="seg small" id="specsWebSeg" role="group" aria-label="Heavy web analysis for specs check">
-            <button type="button" data-web="no" aria-pressed="true">No</button>
-            <button type="button" data-web="yes" aria-pressed="false">Yes</button>
-          </div>
-          <p class="hint">Each analysis reserves 1 CPU core (2 if Web Analysis) and 4&nbsp;GB RAM.</p>
-        </div>
+  <nav class="tool-switch">
+    <button data-tool="submissions" class="active">Size from submissions</button>
+    <button data-tool="parallel">Size from parallel VMs</button>
+    <button data-tool="validate">Validate my hardware</button>
+  </nav>
+
+  <main>
+    <!-- ============ TOOL 1: FROM SUBMISSIONS ============ -->
+    <section id="tool-submissions" class="tool-panel active">
+      <div class="tool-intro">
+        <h2>Size from expected submission volume</h2>
+        <p>Tell us roughly how many samples you expect to submit and for how long you need to retain results. We'll translate that into Platform Server and Platform Worker hardware.</p>
       </div>
-      <div class="specs-output">
-        <div class="spec" id="specsSpec"></div>
-        <div class="basis" id="specsBasis"></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="layout">
-
-    <!-- ============ PARAMETERS ============ -->
-    <section class="panel" aria-label="Parameters">
-      <div class="panel-hd"><h2>Parameters</h2><span class="idx">input</span></div>
-      <div class="controls">
-
-        <div class="field">
-          <span class="flabel">Submission volume</span>
-          <div class="seg small" id="periodSeg" role="group" aria-label="Submission period">
-            <button type="button" data-period="daily" aria-pressed="true">Per day</button>
-            <button type="button" data-period="monthly" aria-pressed="false">Per month</button>
-          </div>
-          <div class="with-unit" style="margin-top:8px">
-            <input type="number" id="submissions" min="1" step="1" value="1000" inputmode="numeric" />
-            <span class="unit" id="subUnit">/ day</span>
+      <div class="layout">
+        <div class="form-panel" id="form-s"></div>
+        <div class="results" id="results-s">
+          <div class="placeholder">
+            <svg class="mark-sm" viewBox="0 0 100 100"><polygon points="50,6 88,50 50,94" fill="var(--text-faint)"/><polygon points="50,6 12,50 50,94" fill="var(--text-faint)"/></svg>
+            Fill in the form and calculate to see your recommended hardware.
           </div>
         </div>
-
-        <div class="field">
-          <label for="retention">Data retention</label>
-          <div class="with-unit">
-            <input type="number" id="retention" min="0" step="1" value="180" inputmode="numeric" />
-            <span class="unit">days</span>
-          </div>
-          <p class="hint">How long analysis data and original submissions are stored.</p>
-        </div>
-
-        <div class="field">
-          <span class="flabel">Worker VM disk profile</span>
-          <div class="seg small" id="diskSeg" role="group" aria-label="Disk profile">
-            <button type="button" data-profile="light" aria-pressed="false">Light · 30&nbsp;GB</button>
-            <button type="button" data-profile="medium" aria-pressed="false">Medium · 40&nbsp;GB</button>
-            <button type="button" data-profile="heavy" aria-pressed="true">Heavy · 50&nbsp;GB</button>
-          </div>
-          <p class="hint">Fast disk reserved per analysis VM.</p>
-        </div>
-
-        <div class="field">
-          <span class="flabel">Heavy Web Analysis load</span>
-          <div class="seg small" id="webSeg" role="group" aria-label="Heavy web analysis">
-            <button type="button" data-web="no" aria-pressed="true">No</button>
-            <button type="button" data-web="yes" aria-pressed="false">Yes</button>
-          </div>
-          <p class="hint">Adds CPU headroom on Workers only.</p>
-        </div>
-
-        <div class="field">
-          <label for="desiredParallel">Parallel analyses per worker <span style="font-weight:400;color:var(--muted)">(optional override)</span></label>
-          <input type="number" id="desiredParallel" min="0" step="1" value="0" inputmode="numeric" />
-          <p class="hint">Leave at 0 to size Worker CPU/RAM automatically from VM slots. Set a number to size Workers directly for that many simultaneous analyses (1 CPU core, 2 if Web Analysis, + 4&nbsp;GB RAM each).</p>
-        </div>
-
-        <div class="field">
-          <label for="basis">Throughput basis</label>
-          <select id="basis">
-            <option value="internal" selected>Internal Exemplary Deployments · 145 / VM·day</option>
-            <option value="benchmark">Analysis Performance Benchmark · 450 / VM·day</option>
-          </select>
-          <p class="hint">Internal is deployment-calibrated and conservative. Benchmark is raw analysis throughput.</p>
-        </div>
-
-        <details class="adv">
-          <summary><span class="chev">▸</span> Advanced assumptions</summary>
-
-          <div class="field" style="border-top:0">
-            <label for="subtype">Predominant submission type</label>
-            <select id="subtype">
-              <option value="calibrated" selected>Benchmark default · 450 / VM·day</option>
-              <option value="web_analysis">Web Analysis · ~700 / VM·day</option>
-              <option value="executable_documents">Executables &amp; documents · ~450 / VM·day</option>
-              <option value="email_static">Static email analysis · ~5000 / VM·day</option>
-            </select>
-            <p class="adv-note" id="subtypeNote">Only applies to the Analysis Performance Benchmark basis.</p>
-          </div>
-
-          <div class="field">
-            <label for="analyses">Analyses per submission</label>
-            <input type="number" id="analyses" min="0.1" step="0.1" value="1" inputmode="decimal" />
-          </div>
-
-          <div class="field">
-            <label for="minutes">Average analysis time</label>
-            <div class="with-unit">
-              <input type="number" id="minutes" min="0.1" step="0.1" value="4" inputmode="decimal" />
-              <span class="unit">min</span>
-            </div>
-            <p class="hint">Baseline reference is 4 minutes.</p>
-          </div>
-
-          <div class="field">
-            <label for="reportmb">Report + analysis data per analysis</label>
-            <div class="with-unit">
-              <input type="number" id="reportmb" min="0" step="1" value="100" inputmode="decimal" />
-              <span class="unit">MB</span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="submb">Original submission size</label>
-            <div class="with-unit">
-              <input type="number" id="submb" min="0" step="1" value="10" inputmode="decimal" />
-              <span class="unit">MB</span>
-            </div>
-          </div>
-        </details>
-
       </div>
     </section>
 
-    <!-- ============ RECOMMENDATION ============ -->
-    <div class="results">
+    <!-- ============ TOOL 2: FROM PARALLEL VMS ============ -->
+    <section id="tool-parallel" class="tool-panel">
+      <div class="tool-intro">
+        <h2>Size from a target parallel-analysis capacity</h2>
+        <p>Already know how many analyses you need running in parallel? Enter that number directly and we'll size the Platform Workers to match, using the same worker formulas as the submissions-based calculator.</p>
+      </div>
+      <div class="layout">
+        <div class="form-panel" id="form-p"></div>
+        <div class="results" id="results-p">
+          <div class="placeholder">
+            <svg class="mark-sm" viewBox="0 0 100 100"><polygon points="50,6 88,50 50,94" fill="var(--text-faint)"/><polygon points="50,6 12,50 50,94" fill="var(--text-faint)"/></svg>
+            Enter a target parallel VM count to see the recommended worker layout.
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <div class="headline" id="headline"></div>
-
-      <section class="panel">
-        <div class="panel-hd"><h2>Deployment topology</h2><span class="idx" id="topoMeta"></span></div>
-        <div class="topo" id="topo"></div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-hd"><h2>Separated setup</h2><span class="idx">server + workers</span></div>
-        <div class="spec" id="serverSpec"></div>
-        <div class="basis" id="serverBasis"></div>
-        <div class="spec" id="workerSpec"></div>
-        <div class="basis" id="workerBasis"></div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-hd"><h2>Combined host (optional)</h2><span class="idx" id="coloChipWrap"></span></div>
-        <div class="basis" id="coloReason" style="border-top:0"></div>
-        <div class="colo-scen spec" id="coloSpec"></div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-hd"><h2>Assumptions</h2><span class="idx">notes</span></div>
-        <div class="assump"><ul id="assump"></ul></div>
-      </section>
-
-    </div>
-  </div>
+    <!-- ============ TOOL 3: VALIDATE HARDWARE ============ -->
+    <section id="tool-validate" class="tool-panel">
+      <div class="tool-intro">
+        <h2>Validate hardware you already have</h2>
+        <p>Describe your expected workload and the hardware you're planning to use, and we'll check it against what VMRay's model recommends for that workload.</p>
+      </div>
+      <div class="layout" style="grid-template-columns:380px 1fr;">
+        <div class="form-panel" id="form-v"></div>
+        <div class="results" id="results-v">
+          <div class="placeholder">
+            <svg class="mark-sm" viewBox="0 0 100 100"><polygon points="50,6 88,50 50,94" fill="var(--text-faint)"/><polygon points="50,6 12,50 50,94" fill="var(--text-faint)"/></svg>
+            Fill in your workload and hardware to see a pass / fail breakdown.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer>
-    <span>Port of the VMRay On-Prem sizing script — runs entirely in your browser.</span>
-    <span class="mono" id="stamp"></span>
+    This tool gives a rough first hardware sizing estimate for a VMRay On-Prem installation, based on VMRay's internal sizing assumptions.<br/>
+    Treat it as a starting point for sizing conversations, not a final procurement spec — confirm with your VMRay representative before purchasing.
   </footer>
+
 </div>
 
 <script>
-"use strict";
-/* =====================================================================
-   VMRay On-Prem hardware sizing — logic ported 1:1 from the Python tool.
-   All figures are rough first estimates.
-   ===================================================================== */
+/* =========================================================================
+   LOGIN GATE
+   Credentials are never stored in plain text in this file — only their
+   SHA-256 hashes are. On submit, the entered values are hashed in the
+   browser with the Web Crypto API and compared to those hashes.
+   NOTE: this is a lightweight access gate for a static page, not real
+   authentication — anyone who can view this file's source (or open dev
+   tools) can find the hashes and, with enough effort, brute-force or
+   bypass the check. Don't rely on it to protect anything sensitive.
+   ========================================================================= */
 
-// ---- Constants -----------------------------------------------------
+const AUTH_USER_HASH = "52ab16b0d4ac6542d1666445da3a55ecceb65c708a1acd3935a4b46e36b901c7";
+const AUTH_PASS_HASH = "43a21c659259e3400d60d91dfa905ffd7019b4dc75a5167a9ea53f504858905b";
+const AUTH_SESSION_KEY = "vmray-sizing-authed";
+
+async function sha256Hex(text) {
+  const data = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function unlockApp() {
+  document.body.classList.remove("locked");
+}
+
+(function initLoginGate() {
+  if (sessionStorage.getItem(AUTH_SESSION_KEY) === "1") {
+    unlockApp();
+  }
+
+  const form = document.getElementById("login-form");
+  const errorEl = document.getElementById("login-error");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = document.getElementById("login-user").value.trim();
+    const pass = document.getElementById("login-pass").value;
+
+    const [userHash, passHash] = await Promise.all([sha256Hex(user), sha256Hex(pass)]);
+
+    if (userHash === AUTH_USER_HASH && passHash === AUTH_PASS_HASH) {
+      errorEl.classList.remove("show");
+      sessionStorage.setItem(AUTH_SESSION_KEY, "1");
+      unlockApp();
+    } else {
+      errorEl.classList.add("show");
+      document.getElementById("login-pass").value = "";
+    }
+  });
+})();
+
+/* =========================================================================
+   CALCULATION CORE — ported 1:1 from the VMRay On-Prem Hardware Sizing
+   reference script (same constants, same formulas, same rounding rules).
+   ========================================================================= */
+
 const DAYS_PER_MONTH = 30.0;
 
-const INTERNAL_THROUGHPUT = 145.0;      // per VM/day
-const BENCHMARK_THROUGHPUT = 450.0;     // per VM/day
+const INTERNAL_EXEMPLARY_DEPLOYMENTS_THROUGHPUT_PER_VM_PER_DAY = 145.0;
+const ANALYSIS_PERFORMANCE_BENCHMARK_THROUGHPUT_PER_VM_PER_DAY = 450.0;
 
 const THROUGHPUT_BASIS_INTERNAL = "internal_exemplary_deployments";
 const THROUGHPUT_BASIS_BENCHMARK = "analysis_performance_benchmark";
 
 const SUBMISSION_TYPE_THROUGHPUTS = {
-  calibrated:           { label: "Analysis Performance Benchmark default", throughput: BENCHMARK_THROUGHPUT },
-  web_analysis:         { label: "Web Analysis",                           throughput: 700.0 },
-  executable_documents: { label: "executables and documents",             throughput: 450.0 },
-  email_static:         { label: "static email analysis",                 throughput: 5000.0 },
+  calibrated: { label: "Analysis Performance Benchmark default", throughput: ANALYSIS_PERFORMANCE_BENCHMARK_THROUGHPUT_PER_VM_PER_DAY },
+  web_analysis: { label: "Web Analysis", throughput: 700.0 },
+  executable_documents: { label: "executables and documents", throughput: 450.0 },
+  email_static: { label: "static email analysis", throughput: 5000.0 },
 };
 
 const BASELINE_ANALYSIS_MINUTES = 4;
-
 const WORKER_MIN_PARALLEL_VMS = 4;
+
 const WORKER_CPU_CORES_PER_VM = 1.0;
 const WORKER_RAM_SMALL_FIXED_GB = 2.0;
 const WORKER_RAM_SMALL_PER_VM_GB = 3.0;
 const WORKER_RAM_LARGE_PER_VM_GB = 3.5;
+
 const WORKER_RESERVED_CPU_CORES = 2;
 const WEB_ANALYSIS_EXTRA_CPU_RATIO = 0.25;
-
-// Fixed per-analysis hardware cost, used by "Check Your Specs" and as an
-// optional override for Worker CPU/RAM sizing in the forward calculator.
-const CAPACITY_CPU_PER_ANALYSIS = 1;
-const CAPACITY_CPU_PER_ANALYSIS_WEB = 2;
-const CAPACITY_RAM_PER_ANALYSIS_GB = 4;
 
 const DEFAULT_SMALL_WORKER_VM_TARGET = 14;
 const DEFAULT_MEDIUM_WORKER_VM_TARGET = 16;
@@ -527,529 +543,633 @@ const COLOCATION_MEDIUM_STORAGE_GB = 4000;
 const COLOCATION_SMALL_VM_LIMIT = 10;
 const COLOCATION_MEDIUM_VM_LIMIT = 20;
 
-const COMMON_CPU_CORES = [4,6,8,10,12,16,20,24,32,48,64,96,128,192,256];
-const COMMON_RAM_GB    = [8,16,32,48,64,96,128,156,192,256,384,512,768,1024];
+const COMMON_CPU_CORES = [4, 6, 8, 10, 12, 16, 20, 24, 32, 48, 64, 96, 128, 192, 256];
+const COMMON_RAM_GB = [8, 16, 32, 48, 64, 96, 128, 156, 192, 256, 384, 512, 768, 1024];
 
-// ---- Helpers -------------------------------------------------------
-function roundUpToCommon(value, options){
-  for(const opt of options){ if(value <= opt) return opt; }
-  const step = options[options.length-1];
-  return Math.ceil(value/step)*step;
+function roundUpToCommon(value, options) {
+  for (const option of options) if (value <= option) return option;
+  const step = options[options.length - 1];
+  return Math.ceil(value / step) * step;
 }
 
-function diskPerVmFromProfile(profile){
-  if(profile === "light") return 30.0;
-  if(profile === "medium") return 40.0;
-  return 50.0; // heavy
+function diskPerVmFromProfile(profile) {
+  if (profile === "light") return 30.0;
+  if (profile === "medium") return 40.0;
+  return 50.0;
 }
 
-function calculateWorkerRamGb(n){
-  if(n <= 0) return 0.0;
-  if(n <= 4) return WORKER_RAM_SMALL_FIXED_GB + WORKER_RAM_SMALL_PER_VM_GB * n;
+function calculateWorkerRamGb(n) {
+  if (n <= 0) return 0.0;
+  if (n <= 4) return WORKER_RAM_SMALL_FIXED_GB + WORKER_RAM_SMALL_PER_VM_GB * n;
   return WORKER_RAM_LARGE_PER_VM_GB * n;
 }
 
-function throughputForSubmissionType(basis, subType){
-  if(basis === THROUGHPUT_BASIS_INTERNAL){
-    return { throughput: INTERNAL_THROUGHPUT, label: "Internal Exemplary Deployments" };
+function throughputForSubmissionType(basis, submissionType) {
+  if (basis === THROUGHPUT_BASIS_INTERNAL) {
+    return [INTERNAL_EXEMPLARY_DEPLOYMENTS_THROUGHPUT_PER_VM_PER_DAY, "Internal Exemplary Deployments"];
   }
-  const data = SUBMISSION_TYPE_THROUGHPUTS[subType] || SUBMISSION_TYPE_THROUGHPUTS.calibrated;
-  return { throughput: data.throughput, label: data.label };
+  const data = SUBMISSION_TYPE_THROUGHPUTS[submissionType] || SUBMISSION_TYPE_THROUGHPUTS.calibrated;
+  return [data.throughput, data.label];
 }
 
-function estimateRequiredParallelVms(inp, daily){
-  const { throughput, label } = throughputForSubmissionType(inp.throughputBasis, inp.submissionType);
-  const analysisTimeFactor = inp.averageAnalysisMinutes / BASELINE_ANALYSIS_MINUTES;
-  const effective = daily * inp.analysesPerSubmission * analysisTimeFactor;
-  const required = Math.max(WORKER_MIN_PARALLEL_VMS, Math.ceil(effective / throughput));
-  return { required, throughput, effective, label };
+function estimateRequiredParallelVms(inp, dailySubmissions) {
+  const [throughput, throughputLabel] = throughputForSubmissionType(inp.throughput_basis, inp.submission_type);
+  const analysisTimeFactor = inp.average_analysis_minutes / BASELINE_ANALYSIS_MINUTES;
+  const effectiveWorkloadUnits = dailySubmissions * inp.analyses_per_submission * analysisTimeFactor;
+  const required = Math.max(WORKER_MIN_PARALLEL_VMS, Math.ceil(effectiveWorkloadUnits / throughput));
+  return { required, throughput, effectiveWorkloadUnits, throughputLabel };
 }
 
-function automaticWorkerTarget(req){
-  if(req <= 28) return DEFAULT_SMALL_WORKER_VM_TARGET;
-  if(req <= 100) return DEFAULT_MEDIUM_WORKER_VM_TARGET;
+function automaticWorkerTarget(required) {
+  if (required <= 28) return DEFAULT_SMALL_WORKER_VM_TARGET;
+  if (required <= 100) return DEFAULT_MEDIUM_WORKER_VM_TARGET;
   return DEFAULT_LARGE_WORKER_VM_TARGET;
 }
 
-function distributeVms(req){
-  const target = automaticWorkerTarget(req);
-  const workers = Math.max(1, Math.ceil(req / target));
-  const vmsPerWorker = Math.ceil(req / workers);
-  const total = workers * vmsPerWorker;
-  return { workers, vmsPerWorker, total };
+function distributeVms(required) {
+  const target = automaticWorkerTarget(required);
+  const workers = Math.max(1, Math.ceil(required / target));
+  const vmsPerWorker = Math.ceil(required / workers);
+  return { workers, vmsPerWorker, totalCapacity: workers * vmsPerWorker };
 }
 
-function estimateServerStorage(inp, daily){
-  const analysisDataGb = daily * inp.analysesPerSubmission * inp.retentionDays * inp.averageReportMb / 1024.0;
-  const originalSubmissionsGb = daily * inp.retentionDays * inp.averageSubmissionMb / 1024.0;
-  const retainedWithout = analysisDataGb + originalSubmissionsGb;
-  const retainedWith = retainedWithout * SERVER_STORAGE_DATA_HEADROOM;
-  const recommended = SERVER_MIN_FAST_DISK_GB + retainedWith;
+// Per-worker CPU / RAM / disk sizing for a given VM count — the same formula
+// block used inside calculate(), exposed standalone for the "parallel VMs"
+// and "validate hardware" tools.
+function workerSpecsForVmCount(vmsPerWorker, workerDiskGbPerVm, heavyWebAnalysis) {
+  const cpuMinimum = vmsPerWorker * WORKER_CPU_CORES_PER_VM;
+  const cpuWebExtra = heavyWebAnalysis ? Math.ceil(vmsPerWorker * WEB_ANALYSIS_EXTRA_CPU_RATIO) : 0;
+  const cpuMinimumTotal = cpuMinimum + WORKER_RESERVED_CPU_CORES + cpuWebExtra;
+  const cpuRecommended = roundUpToCommon(cpuMinimumTotal, COMMON_CPU_CORES);
+
+  const ramMinimum = calculateWorkerRamGb(vmsPerWorker);
+  const ramRecommended = roundUpToCommon(ramMinimum, COMMON_RAM_GB);
+
+  const diskMinimum = vmsPerWorker * workerDiskGbPerVm;
+
+  return { cpuMinimum: cpuMinimumTotal, cpuWebExtra, cpuRecommended, ramMinimum, ramRecommended, diskMinimum };
+}
+
+function estimateServerStorage(inp, dailySubmissions) {
+  const analysisDataGb = (dailySubmissions * inp.analyses_per_submission * inp.retention_days * inp.average_report_and_analysis_mb) / 1024.0;
+  const originalSubmissionsGb = (dailySubmissions * inp.retention_days * inp.average_submission_mb) / 1024.0;
+  const retainedWithoutHeadroom = analysisDataGb + originalSubmissionsGb;
+  const retainedWithHeadroom = retainedWithoutHeadroom * SERVER_STORAGE_DATA_HEADROOM;
+  const recommended = SERVER_MIN_FAST_DISK_GB + retainedWithHeadroom;
   return {
     recommended,
-    breakdown: {
-      analysisDataGb, originalSubmissionsGb,
-      retainedWithout, retainedWith,
-      baselineGb: SERVER_MIN_FAST_DISK_GB,
-    }
+    breakdown: { analysisDataGb, originalSubmissionsGb, retainedWithoutHeadroom, retainedWithHeadroom, localFastDiskBaselineGb: SERVER_MIN_FAST_DISK_GB },
   };
 }
 
-function estimateServerCpuRam(daily, storageGb){
+function estimateServerCpuRam(dailySubmissions, serverStorageGbRecommended) {
   let cpu, ram;
-  if(daily <= 1000){ cpu=4; ram=8; }
-  else if(daily <= 5000){ cpu=8; ram=16; }
-  else if(daily <= 12000){ cpu=16; ram=32; }
-  else if(daily <= 30000){ cpu=24; ram=64; }
-  else { cpu=32; ram=96; }
+  if (dailySubmissions <= 1000) { cpu = 4; ram = 8; }
+  else if (dailySubmissions <= 5000) { cpu = 8; ram = 16; }
+  else if (dailySubmissions <= 12000) { cpu = 16; ram = 32; }
+  else if (dailySubmissions <= 30000) { cpu = 24; ram = 64; }
+  else { cpu = 32; ram = 96; }
 
-  if(storageGb >= 12000) ram = Math.max(ram, 32);
-  if(storageGb >= 64000) ram = Math.max(ram, 64);
-  if(storageGb >= 192000) ram = Math.max(ram, 96);
-  return { cpu, ram };
+  if (serverStorageGbRecommended >= 12000) ram = Math.max(ram, 32);
+  if (serverStorageGbRecommended >= 64000) ram = Math.max(ram, 64);
+  if (serverStorageGbRecommended >= 192000) ram = Math.max(ram, 96);
+  return [cpu, ram];
 }
 
-function assessColocation(o){
-  const combinedCpu = roundUpToCommon(o.workerCpuRec + o.serverCpu, COMMON_CPU_CORES);
-  const combinedRam = roundUpToCommon(o.workerRamRec + o.serverRam, COMMON_RAM_GB);
-  const combinedLocalStorage = o.workerDiskRec + o.serverStorage;
-  const combinedExternalStorage = o.workerDiskRec + SERVER_MIN_FAST_DISK_GB;
+function assessColocation(p) {
+  const combinedCpu = roundUpToCommon(p.workerCpuRecommended + p.serverCpu, COMMON_CPU_CORES);
+  const combinedRam = roundUpToCommon(p.workerRamRecommended + p.serverRam, COMMON_RAM_GB);
+  const combinedLocalStorage = p.workerDiskRecommended + p.serverStorageRecommended;
+  const combinedExternalStorage = p.workerDiskRecommended + SERVER_MIN_FAST_DISK_GB;
 
-  let status, reason, level;
-  if(o.workers === 1 && o.required <= COLOCATION_SMALL_VM_LIMIT && o.serverStorage <= COLOCATION_SMALL_STORAGE_GB){
-    status = "Good fit"; level = "good";
-    reason = "small analysis load and small retained data footprint";
-  } else if(o.required <= COLOCATION_MEDIUM_VM_LIMIT && o.serverStorage <= COLOCATION_MEDIUM_STORAGE_GB){
-    status = "Possible with caution"; level = "caution";
-    reason = "moderate size; keep Server VM resources reserved and watch disk I/O";
+  let status, reason;
+  if (p.workers === 1 && p.requiredParallelVms <= COLOCATION_SMALL_VM_LIMIT && p.serverStorageRecommended <= COLOCATION_SMALL_STORAGE_GB) {
+    status = "Good fit"; reason = "small analysis load and small retained data footprint";
+  } else if (p.requiredParallelVms <= COLOCATION_MEDIUM_VM_LIMIT && p.serverStorageRecommended <= COLOCATION_MEDIUM_STORAGE_GB) {
+    status = "Possible with caution"; reason = "moderate size — keep Server VM resources reserved and watch disk I/O";
   } else {
-    status = "Not recommended by default"; level = "warn";
-    reason = "larger VM count, Worker count, or retained data size makes separation cleaner";
+    status = "Not recommended by default"; reason = "larger VM count, Worker count, or retained data size makes separation cleaner";
   }
-  return { status, reason, level, combinedCpu, combinedRam, combinedLocalStorage, combinedExternalStorage };
+  return { status, reason, combinedCpu, combinedRam, combinedLocalStorage, combinedExternalStorage };
 }
 
-function calculate(inp){
-  const daily = inp.submissionsPeriod === "monthly" ? inp.submissions / DAYS_PER_MONTH : inp.submissions;
+function calculate(inp) {
+  const dailySubmissions = inp.submissions_period === "monthly" ? inp.submissions / DAYS_PER_MONTH : inp.submissions;
+  const { required: requiredParallelVms, throughput, effectiveWorkloadUnits, throughputLabel } = estimateRequiredParallelVms(inp, dailySubmissions);
+  const { workers, vmsPerWorker, totalCapacity } = distributeVms(requiredParallelVms);
+  const w = workerSpecsForVmCount(vmsPerWorker, inp.worker_disk_gb_per_vm, inp.heavy_web_analysis);
 
-  const { required, throughput, effective, label } = estimateRequiredParallelVms(inp, daily);
-  const { workers, vmsPerWorker, total } = distributeVms(required);
-
-  const workerCpuMin = vmsPerWorker * WORKER_CPU_CORES_PER_VM;
-  const workerCpuWebExtra = inp.heavyWebAnalysis ? Math.ceil(vmsPerWorker * WEB_ANALYSIS_EXTRA_CPU_RATIO) : 0;
-
-  const workerRamMin = calculateWorkerRamGb(vmsPerWorker);
-
-  // Optional override: size Worker CPU/RAM directly for a target number of
-  // simultaneous analyses per worker, using the fixed per-analysis cost rule
-  // (1 CPU core, 2 if Web Analysis, + 4 GB RAM each) instead of the VM-slot
-  // based formula above. Leaving this at 0 keeps the original behavior.
-  const parallelOverrideApplied = inp.desiredParallelPerWorker > 0;
-  let workerCpuRec, workerRamRec;
-  if(parallelOverrideApplied){
-    const corePerAnalysis = inp.heavyWebAnalysis ? CAPACITY_CPU_PER_ANALYSIS_WEB : CAPACITY_CPU_PER_ANALYSIS;
-    workerCpuRec = roundUpToCommon(inp.desiredParallelPerWorker * corePerAnalysis + WORKER_RESERVED_CPU_CORES, COMMON_CPU_CORES);
-    workerRamRec = roundUpToCommon(inp.desiredParallelPerWorker * CAPACITY_RAM_PER_ANALYSIS_GB, COMMON_RAM_GB);
-  } else {
-    workerCpuRec = roundUpToCommon(workerCpuMin + WORKER_RESERVED_CPU_CORES + workerCpuWebExtra, COMMON_CPU_CORES);
-    workerRamRec = roundUpToCommon(workerRamMin, COMMON_RAM_GB);
-  }
-
-  const workerDiskMin = vmsPerWorker * inp.workerDiskGbPerVm;
-  const workerDiskRec = workerDiskMin;
-
-  const storage = estimateServerStorage(inp, daily);
-  const { cpu: serverCpu, ram: serverRam } = estimateServerCpuRam(daily, storage.recommended);
+  const { recommended: serverStorageRecommended, breakdown: serverStorageBreakdown } = estimateServerStorage(inp, dailySubmissions);
+  const [serverCpu, serverRam] = estimateServerCpuRam(dailySubmissions, serverStorageRecommended);
 
   const colocation = assessColocation({
-    required, workers,
-    workerCpuRec, workerRamRec, workerDiskRec,
-    serverCpu, serverRam, serverStorage: storage.recommended,
+    requiredParallelVms, workers,
+    workerCpuRecommended: w.cpuRecommended, workerRamRecommended: w.ramRecommended, workerDiskRecommended: w.diskMinimum,
+    serverCpu, serverRam, serverStorageRecommended,
   });
 
   return {
-    daily, throughput, label, effective,
-    required, workers, vmsPerWorker, total,
-    workerCpuMin, workerCpuWebExtra, workerCpuRec,
-    workerRamMin, workerRamRec, parallelOverrideApplied,
-    workerDiskMin, workerDiskRec,
-    serverCpu, serverRam,
-    serverStorage: storage.recommended,
-    breakdown: storage.breakdown,
+    dailySubmissions, throughputPerVmPerDay: throughput, throughputLabel, effectiveWorkloadUnitsPerDay: effectiveWorkloadUnits,
+    requiredParallelVms, workers, vmsPerWorker, totalParallelVmCapacity: totalCapacity,
+    workerCpuCoresMinimum: w.cpuMinimum, workerCpuWebExtraCores: w.cpuWebExtra, workerCpuCoresRecommended: w.cpuRecommended,
+    workerRamGbMinimum: w.ramMinimum, workerRamGbRecommended: w.ramRecommended,
+    workerFastDiskGbMinimum: w.diskMinimum, workerFastDiskGbRecommended: w.diskMinimum,
+    serverCpuCoresRecommended: serverCpu, serverRamGbRecommended: serverRam,
+    serverStorageGbRecommended: serverStorageRecommended, serverStorageBreakdown,
     colocation,
   };
 }
 
-// ---- Formatting ----------------------------------------------------
-function fmtNumber(value, decimals=1){
-  if(Math.abs(value - Math.round(value)) < 1e-9){
-    return Math.round(value).toLocaleString("en-US");
-  }
-  return value.toLocaleString("en-US",{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+/* ---------- formatting ---------- */
+function fmtNumber(value, decimals = 1) {
+  if (Math.abs(value - Math.round(value)) < 1e-9) return Math.round(value).toLocaleString();
+  return value.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
-function fmtGb(gb){
-  if(gb >= 1000) return (gb/1000).toFixed(1) + " TB";
-  return gb.toFixed(0) + " GB";
-}
-function esc(s){ return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
-
-// ---- State ---------------------------------------------------------
-const state = {
-  submissionsPeriod: "daily",
-  submissions: 1000,
-  retentionDays: 180,
-  workerDiskProfile: "heavy",
-  workerDiskGbPerVm: 50,
-  heavyWebAnalysis: false,
-  desiredParallelPerWorker: 0,
-  throughputBasis: THROUGHPUT_BASIS_INTERNAL,
-  submissionType: "calibrated",
-  analysesPerSubmission: 1,
-  averageAnalysisMinutes: 4,
-  averageReportMb: 100,
-  averageSubmissionMb: 10,
-};
-
-// ---- Check Your Specs (reverse calc) --------------------------------
-// Given hardware you already have, estimate the max parallel analysis
-// VMs it supports: each analysis reserves 1 CPU core (2 if Web
-// Analysis) + 4 GB RAM. The same fixed-cost rule is also used as an
-// optional override on the forward Worker sizing below.
-const specsState = { cpu: 32, ram: 128, web: false };
-
-function calculateCapacity(c){
-  const corePerAnalysis = c.web ? CAPACITY_CPU_PER_ANALYSIS_WEB : CAPACITY_CPU_PER_ANALYSIS;
-  const ramPerAnalysisGb = CAPACITY_RAM_PER_ANALYSIS_GB;
-  const cpuLimit = c.cpu > 0 ? Math.floor(c.cpu / corePerAnalysis) : 0;
-  const ramLimit = c.ram > 0 ? Math.floor(c.ram / ramPerAnalysisGb) : 0;
-  const maxParallel = Math.max(0, Math.min(cpuLimit, ramLimit));
-  let bottleneck = "balanced";
-  if(cpuLimit < ramLimit) bottleneck = "cpu";
-  else if(ramLimit < cpuLimit) bottleneck = "ram";
-  return { corePerAnalysis, ramPerAnalysisGb, cpuLimit, ramLimit, maxParallel, bottleneck };
+function fmtGb(gb) {
+  if (gb >= 1000) return (gb / 1000).toFixed(1) + " TB";
+  return Math.round(gb) + " GB";
 }
 
-function renderSpecsCheck(){
-  const cc = calculateCapacity(specsState);
-  const level = cc.maxParallel <= 0 ? "warn" : (cc.bottleneck === "balanced" ? "good" : "caution");
-  const bottleneckText = cc.bottleneck === "balanced"
-    ? "CPU and RAM run out at the same point — well balanced."
-    : cc.bottleneck === "cpu"
-      ? "CPU runs out first — RAM has spare headroom."
-      : "RAM runs out first — CPU has spare headroom.";
+/* =========================================================================
+   UI — form builders
+   ========================================================================= */
 
-  $("specsChipWrap").innerHTML = `<span class="chip ${level}">${cc.maxParallel} parallel</span>`;
-  $("specsSpec").innerHTML = `
-    <div class="spec-row">
-      <div class="label">Max parallel analyses<br><span class="tag">given available hardware</span></div>
-      <div class="val"><span class="big">${cc.maxParallel} analysis VM slot(s)</span></div>
-    </div>
-    <div class="spec-row">
-      <div class="label">CPU-bound limit</div>
-      <div class="val">${fmtNumber(specsState.cpu)} cores ÷ ${cc.corePerAnalysis} core${cc.corePerAnalysis>1?"s":""}/analysis = <span class="big">${fmtNumber(cc.cpuLimit)}</span></div>
-    </div>
-    <div class="spec-row">
-      <div class="label">RAM-bound limit</div>
-      <div class="val">${fmtNumber(specsState.ram)} GB ÷ ${cc.ramPerAnalysisGb} GB/analysis = <span class="big">${fmtNumber(cc.ramLimit)}</span></div>
-    </div>`;
-  $("specsBasis").innerHTML = `${bottleneckText} Each analysis reserves ${cc.corePerAnalysis} CPU core${cc.corePerAnalysis>1?"s":""}${specsState.web ? " (Web Analysis)" : ""} and ${cc.ramPerAnalysisGb} GB RAM; the smaller of the two limits sets parallel capacity.`;
-}
-
-// ---- Rendering -----------------------------------------------------
-const $ = id => document.getElementById(id);
-
-function render(){
-  const r = calculate(state);
-  const b = r.breakdown, c = r.colocation;
-  const inp = state;
-
-  // Parallel analysis capacity of the recommended Worker hardware, using
-  // the fixed per-analysis cost rule: 1 CPU core (2 if Web Analysis) + 4 GB RAM.
-  const wcap = calculateCapacity({ cpu: r.workerCpuRec, ram: r.workerRamRec, web: inp.heavyWebAnalysis });
-  const wcapFleet = wcap.maxParallel * r.workers;
-
-  // Headline metrics
-  $("headline").innerHTML = `
-    <div class="metric">
-      <div class="k">Analysis capacity</div>
-      <div class="v">${r.required}<small> VM slots</small></div>
-      <div class="sub">min parallel analysis VMs required</div>
-    </div>
-    <div class="metric">
-      <div class="k">Worker layout</div>
-      <div class="v">${r.workers}<small> × </small>${r.vmsPerWorker}</div>
-      <div class="sub">${r.workers} worker(s), ${r.total} total VM slots</div>
-    </div>
-    <div class="metric">
-      <div class="k">Parallel per worker</div>
-      <div class="v">${wcap.maxParallel}<small> at once</small></div>
-      <div class="sub">${wcapFleet} across the fleet, by CPU/RAM</div>
-    </div>
-    <div class="metric">
-      <div class="k">Daily volume</div>
-      <div class="v">${fmtNumber(r.daily)}</div>
-      <div class="sub">${fmtNumber(inp.submissions)} / ${inp.submissionsPeriod}</div>
-    </div>`;
-
-  // Topology
-  const maxSlots = 60;
-  function slots(n){
-    const show = Math.min(n, maxSlots);
-    let s = '<div class="slots">';
-    for(let i=0;i<show;i++) s += '<span class="slot"></span>';
-    s += '</div>';
-    if(n > maxSlots) s += `<div class="wmeta" style="margin-top:4px">+${n-maxSlots} more</div>`;
-    return s;
-  }
-  let workerNodes = "";
-  const shownWorkers = Math.min(r.workers, 4);
-  for(let i=0;i<shownWorkers;i++){
-    workerNodes += `
-      <div class="node">
-        <div class="ntitle">Worker ${i+1}</div>
-        <div class="nspec">${r.workerCpuRec} cores · ${r.workerRamRec} GB<br>${fmtGb(r.workerDiskRec)} disk</div>
-        ${slots(r.vmsPerWorker)}
-      </div>`;
-  }
-  let extraNote = "";
-  if(r.workers > shownWorkers){
-    extraNote = `<div class="wmeta">+ ${r.workers - shownWorkers} identical worker(s)</div>`;
-  }
-  $("topoMeta").textContent = `${r.workers} worker(s) · ${r.vmsPerWorker} VM/worker`;
-  $("topo").innerHTML = `
-    <div class="topo-row">
-      <div class="node server">
-        <div class="ntitle">Platform Server</div>
-        <div class="nspec">${r.serverCpu} cores · ${r.serverRam} GB<br>${fmtGb(r.serverStorage)} fast storage</div>
+function workloadFormHTML(p) {
+  return `
+    <div class="field">
+      <label for="${p}-amount">Submissions</label>
+      <div class="row-2">
+        <input type="number" id="${p}-amount" min="1" value="1000" />
+        <select id="${p}-period">
+          <option value="daily" selected>per day</option>
+          <option value="monthly">per month</option>
+        </select>
       </div>
-      <div class="workers-group">
-        ${workerNodes}
-        ${extraNote}
-      </div>
-    </div>`;
+    </div>
 
-  // Server spec
-  $("serverSpec").innerHTML = `
-    <div class="spec-row">
-      <div class="label">Platform Server</div>
-      <div class="val"><span class="big">${r.serverCpu} cores</span> · <span class="big">${r.serverRam} GB RAM</span> · <span class="big">${fmtGb(r.serverStorage)}</span> fast storage</div>
-    </div>`;
-  const beforeHeadroom = b.retainedWithout;
-  const withHeadroomBaseline = b.retainedWith + b.baselineGb;
-  $("serverBasis").innerHTML = `
-    Storage basis: ${fmtGb(b.analysisDataGb)} analysis/report data + ${fmtGb(b.originalSubmissionsGb)} original submissions
-    = <code>${fmtGb(beforeHeadroom)}</code> retained data.
-    With 20% headroom + ${fmtGb(b.baselineGb)} server baseline → <code>${fmtGb(withHeadroomBaseline)}</code> calculated.`;
+    <div class="field">
+      <label for="${p}-retention">Retention period (days)</label>
+      <input type="number" id="${p}-retention" min="0" value="180" />
+      <div class="hint">How long analysis data and submissions are stored</div>
+    </div>
 
-  // Worker spec
-  const corePerAnalysisUsed = inp.heavyWebAnalysis ? CAPACITY_CPU_PER_ANALYSIS_WEB : CAPACITY_CPU_PER_ANALYSIS;
-  const cpuCalc = r.parallelOverrideApplied
-    ? inp.desiredParallelPerWorker * corePerAnalysisUsed + WORKER_RESERVED_CPU_CORES
-    : r.workerCpuMin + WORKER_RESERVED_CPU_CORES + r.workerCpuWebExtra;
-  const ramCalc = r.parallelOverrideApplied
-    ? inp.desiredParallelPerWorker * CAPACITY_RAM_PER_ANALYSIS_GB
-    : r.workerRamMin;
-  $("workerSpec").innerHTML = `
-    <div class="spec-row">
-      <div class="label">Platform Workers<br><span class="tag">bare metal</span></div>
-      <div class="val">
-        <span class="big">${r.workers} × Worker</span>, each ${r.vmsPerWorker} VM slot(s)
-        <div style="margin-top:6px">
-          <span class="big">${r.workerCpuRec} cores</span> <span class="calc">(${fmtNumber(cpuCalc)} calc)</span> ·
-          <span class="big">${r.workerRamRec} GB RAM</span> <span class="calc">(${fmtNumber(ramCalc)} GB calc)</span> ·
-          <span class="big">${fmtGb(r.workerDiskRec)}</span> fast disk
+    <div class="field">
+      <label>Worker VM disk profile</label>
+      <select id="${p}-diskprofile">
+        <option value="light">Light — 30 GB per VM</option>
+        <option value="medium">Medium — 40 GB per VM</option>
+        <option value="heavy" selected>Heavy — 50 GB per VM</option>
+      </select>
+    </div>
+
+    <div class="field toggle-row">
+      <label for="${p}-heavyweb">Heavy Web Analysis expected</label>
+      <div class="switch" id="${p}-heavyweb" data-on="false"></div>
+    </div>
+
+    <div class="field">
+      <label>Throughput basis</label>
+      <div class="choice-cards" id="${p}-basis">
+        <div class="choice-card selected" data-value="internal_exemplary_deployments">
+          <div class="cc-title">Internal deployments</div>
+          <div class="cc-sub">145 submissions / VM / day</div>
+        </div>
+        <div class="choice-card" data-value="analysis_performance_benchmark">
+          <div class="cc-title">Benchmark</div>
+          <div class="cc-sub">450 submissions / VM / day</div>
         </div>
       </div>
     </div>
-    <div class="spec-row">
-      <div class="label">Parallel analyses<br><span class="tag">CPU/RAM rule</span></div>
-      <div class="val">
-        <span class="big">${wcap.maxParallel} at once</span> per worker <span class="calc">(${wcapFleet} across ${r.workers} worker(s))</span>
+
+    <details class="advanced">
+      <summary>Advanced assumptions</summary>
+      <div class="field" id="${p}-subtype-field" style="display:none;">
+        <label>Predominant submission type</label>
+        <select id="${p}-subtype">
+          <option value="calibrated">Use benchmark default (450/day)</option>
+          <option value="web_analysis">Web Analysis — 700/day</option>
+          <option value="executable_documents" selected>Executables &amp; documents — 450/day</option>
+          <option value="email_static">Static email analysis — 5000/day</option>
+        </select>
       </div>
-    </div>`;
-  const webNote = inp.heavyWebAnalysis
-    ? ` +${r.workerCpuWebExtra} extra CPU core(s) for Web Analysis headroom.` : "";
-  const overrideNote = r.parallelOverrideApplied
-    ? `Override active: Worker CPU/RAM sized directly for ${fmtNumber(inp.desiredParallelPerWorker)} parallel analyses per worker —
-       ${wcap.corePerAnalysis} CPU core${wcap.corePerAnalysis>1?"s":""}${inp.heavyWebAnalysis?" (Web Analysis)":""} + ${wcap.ramPerAnalysisGb} GB RAM each, rounded up to common hardware sizes.`
-    : `Worker basis: 1 core and ${fmtGb(inp.workerDiskGbPerVm)} disk per VM.
-       RAM = 2 GB + 3 GB × VMs for 1–4 VMs, or 3.5 GB × VMs for 5+ VMs.
-       +2 CPU cores reserved where possible.${webNote}
-       Parallel-analysis rule: each analysis reserves ${wcap.corePerAnalysis} CPU core${wcap.corePerAnalysis>1?"s":""}${inp.heavyWebAnalysis?" (Web Analysis)":""} + ${wcap.ramPerAnalysisGb} GB RAM,
-       so the recommended Worker hardware (${r.workerCpuRec} cores / ${r.workerRamRec} GB) can run ${wcap.maxParallel} analyses at once.`;
-  $("workerBasis").innerHTML = overrideNote;
+      <div class="field">
+        <label for="${p}-analyses">Analyses per submission</label>
+        <input type="number" id="${p}-analyses" min="0.1" step="0.1" value="1" />
+      </div>
+      <div class="field">
+        <label for="${p}-avgmin">Average analysis time (minutes)</label>
+        <input type="number" id="${p}-avgmin" min="0.1" step="0.1" value="4" />
+      </div>
+      <div class="field">
+        <label for="${p}-reportmb">Report + analysis data per analysis (MB)</label>
+        <input type="number" id="${p}-reportmb" min="0" value="100" />
+      </div>
+      <div class="field">
+        <label for="${p}-submb">Original submission size (MB)</label>
+        <input type="number" id="${p}-submb" min="0" value="10" />
+      </div>
+    </details>
+  `;
+}
 
-  // Colocation
-  $("coloChipWrap").innerHTML = `<span class="chip ${c.level}">${esc(c.status)}</span>`;
-  $("coloReason").innerHTML = `Server and one Worker on the same machine — ${esc(c.reason)}.`;
-  $("coloSpec").innerHTML = `
-    <div class="spec-row">
-      <div class="label">Server data local</div>
-      <div class="val"><span class="big">${c.combinedCpu} cores</span> · <span class="big">${c.combinedRam} GB RAM</span> · <span class="big">${fmtGb(c.combinedLocalStorage)}</span> fast storage</div>
+function wireWorkloadForm(p) {
+  // basis choice cards
+  const basisWrap = document.getElementById(`${p}-basis`);
+  basisWrap.querySelectorAll(".choice-card").forEach(card => {
+    card.addEventListener("click", () => {
+      basisWrap.querySelectorAll(".choice-card").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+      updateSubtypeVisibility(p);
+    });
+  });
+  // heavy web toggle
+  const sw = document.getElementById(`${p}-heavyweb`);
+  sw.addEventListener("click", () => {
+    const on = sw.dataset.on === "true";
+    sw.dataset.on = (!on).toString();
+    sw.classList.toggle("on", !on);
+  });
+  updateSubtypeVisibility(p);
+}
+
+function updateSubtypeVisibility(p) {
+  const basisWrap = document.getElementById(`${p}-basis`);
+  const selected = basisWrap.querySelector(".choice-card.selected").dataset.value;
+  const field = document.getElementById(`${p}-subtype-field`);
+  field.style.display = selected === THROUGHPUT_BASIS_BENCHMARK ? "block" : "none";
+}
+
+function readWorkloadInputs(p) {
+  const basisWrap = document.getElementById(`${p}-basis`);
+  const throughput_basis = basisWrap.querySelector(".choice-card.selected").dataset.value;
+  const heavySwitch = document.getElementById(`${p}-heavyweb`);
+  return {
+    submissions: parseFloat(document.getElementById(`${p}-amount`).value) || 0,
+    submissions_period: document.getElementById(`${p}-period`).value,
+    retention_days: parseFloat(document.getElementById(`${p}-retention`).value) || 0,
+    worker_disk_gb_per_vm: diskPerVmFromProfile(document.getElementById(`${p}-diskprofile`).value),
+    heavy_web_analysis: heavySwitch.dataset.on === "true",
+    throughput_basis,
+    submission_type: throughput_basis === THROUGHPUT_BASIS_BENCHMARK ? document.getElementById(`${p}-subtype`).value : "calibrated",
+    average_analysis_minutes: parseFloat(document.getElementById(`${p}-avgmin`).value) || 4,
+    analyses_per_submission: parseFloat(document.getElementById(`${p}-analyses`).value) || 1,
+    average_report_and_analysis_mb: parseFloat(document.getElementById(`${p}-reportmb`).value) || 0,
+    average_submission_mb: parseFloat(document.getElementById(`${p}-submb`).value) || 0,
+  };
+}
+
+/* =========================================================================
+   TOOL 1 — size from submissions
+   ========================================================================= */
+
+function initToolSubmissions() {
+  const formEl = document.getElementById("form-s");
+  formEl.innerHTML = workloadFormHTML("s") + `<button class="btn-primary" id="s-calc">Calculate sizing</button>`;
+  wireWorkloadForm("s");
+  document.getElementById("s-calc").addEventListener("click", () => {
+    const inp = readWorkloadInputs("s");
+    const result = calculate(inp);
+    renderStandardResult(result, inp);
+  });
+}
+
+function renderStandardResult(r, inp) {
+  const b = r.serverStorageBreakdown;
+  const c = r.colocation;
+  const webNote = inp.heavy_web_analysis
+    ? ` plus ${r.workerCpuWebExtraCores} extra CPU core(s) reserved for Web Analysis headroom`
+    : "";
+  const statusColor = c.status === "Good fit" ? "var(--good)" : c.status === "Possible with caution" ? "var(--warn)" : "var(--bad)";
+  const statusBg = c.status === "Good fit" ? "var(--good-bg)" : c.status === "Possible with caution" ? "var(--warn-bg)" : "var(--bad-bg)";
+
+  document.getElementById("results-s").innerHTML = `
+    <div class="stat-strip">
+      <div class="stat"><div class="num">${fmtNumber(r.dailySubmissions)}</div><div class="lbl">Daily submissions</div></div>
+      <div class="stat"><div class="num">${r.requiredParallelVms}</div><div class="lbl">Required parallel VM slots</div></div>
+      <div class="stat"><div class="num">${r.workers} × ${r.vmsPerWorker}</div><div class="lbl">Workers × VMs = ${r.totalParallelVmCapacity} slots</div></div>
+      <div class="stat"><div class="num">${fmtNumber(r.effectiveWorkloadUnitsPerDay)}</div><div class="lbl">Workload units / day (${r.throughputLabel})</div></div>
     </div>
-    <div class="spec-row">
-      <div class="label">Retained data on NAS / external</div>
-      <div class="val"><span class="big">${c.combinedCpu} cores</span> · <span class="big">${c.combinedRam} GB RAM</span> · <span class="big">${fmtGb(c.combinedExternalStorage)}</span> local + external retained-data storage</div>
-    </div>`;
 
-  // Assumptions
-  const items = [];
-  items.push(`${fmtNumber(inp.analysesPerSubmission)} analysis job(s) per submission; ${fmtNumber(inp.averageAnalysisMinutes)} min average analysis time (baseline reference is ${BASELINE_ANALYSIS_MINUTES} min).`);
-  items.push(`Server storage uses ${fmtNumber(inp.averageReportMb)} MB analysis/report data per analysis and ${fmtNumber(inp.averageSubmissionMb)} MB original submission size per submission.`);
-  if(inp.heavyWebAnalysis){
-    items.push(`Web Analysis headroom adds CPU only; RAM and disk stay based on total VM slots.`);
-  }
-  items.push(`VM count uses the "${esc(r.label)}" throughput basis: ${fmtNumber(r.throughput)} workload units per VM/day. Effective workload used for sizing: ${fmtNumber(r.effective)} units/day.`);
-  items.push(`Minimum parallel VM slots: ${WORKER_MIN_PARALLEL_VMS}. Server CPU/RAM scales mainly by daily volume; retention mainly increases storage.`);
-  $("assump").innerHTML = items.map(t=>`<li>${t}</li>`).join("");
+    <div class="spec-group">
+      <div class="spec-head"><svg class="tri" viewBox="0 0 10 10"><polygon points="5,0 10,10 0,10" fill="var(--accent)"/></svg><h3>Platform Server</h3></div>
+      <div class="spec-body">
+        <div class="spec-numbers">
+          <div class="item"><div class="num">${r.serverCpuCoresRecommended}</div><div class="lbl">CPU cores</div></div>
+          <div class="item"><div class="num">${r.serverRamGbRecommended} GB</div><div class="lbl">RAM</div></div>
+          <div class="item"><div class="num">${fmtGb(r.serverStorageGbRecommended)}</div><div class="lbl">Fast storage</div></div>
+        </div>
+        <div class="spec-note">
+          Storage basis: <b>${fmtGb(b.analysisDataGb)}</b> analysis/report data + <b>${fmtGb(b.originalSubmissionsGb)}</b> original submissions
+          = <b>${fmtGb(b.retainedWithoutHeadroom)}</b> retained data.<br/>
+          With 20% headroom plus a ${fmtGb(b.localFastDiskBaselineGb)} server baseline: <b>${fmtGb(r.serverStorageGbRecommended)}</b> calculated.
+        </div>
+      </div>
+    </div>
 
-  // flash changed headline (subtle)
-  if(window.matchMedia && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-    $("headline").classList.remove("flash"); void $("headline").offsetWidth; $("headline").classList.add("flash");
-  }
+    <div class="spec-group">
+      <div class="spec-head"><svg class="tri" viewBox="0 0 10 10"><polygon points="5,0 10,10 0,10" fill="var(--accent)"/></svg><h3>Platform Workers (bare metal)</h3></div>
+      <div class="spec-body">
+        <div class="spec-numbers">
+          <div class="item"><div class="num">${r.workers}</div><div class="lbl">Workers</div><div class="sub">${r.vmsPerWorker} VM(s) each</div></div>
+          <div class="item"><div class="num">${r.workerCpuCoresRecommended}</div><div class="lbl">CPU cores / worker</div><div class="sub">${fmtNumber(r.workerCpuCoresMinimum)} calculated</div></div>
+          <div class="item"><div class="num">${r.workerRamGbRecommended} GB</div><div class="lbl">RAM / worker</div><div class="sub">${fmtNumber(r.workerRamGbMinimum)} GB calculated</div></div>
+        </div>
+        <div class="spec-numbers" style="margin-top:-4px;">
+          <div class="item"><div class="num">${fmtGb(r.workerFastDiskGbRecommended)}</div><div class="lbl">Fast disk / worker</div></div>
+          <div class="item"><div class="num">${r.totalParallelVmCapacity}</div><div class="lbl">Total VM slots</div></div>
+        </div>
+        <div class="spec-note">
+          Worker basis: 1 core and ${fmtGb(inp.worker_disk_gb_per_vm)} disk per VM; RAM is 2 GB + 3 GB × VM count for 1–4 VMs, or 3.5 GB × VM count for 5+;
+          +2 CPU cores reserved where possible${webNote}.
+        </div>
+      </div>
+    </div>
+
+    <div class="spec-group">
+      <div class="spec-head">
+        <svg class="tri" viewBox="0 0 10 10"><polygon points="5,0 10,10 0,10" fill="var(--accent)"/></svg>
+        <h3>Combined host (optional)</h3>
+        <div class="status-pill" style="color:${statusColor};background:${statusBg};">${c.status}</div>
+      </div>
+      <div class="spec-body">
+        <div class="spec-note" style="margin-bottom:14px;">Platform Server and one Platform Worker on the same machine — ${c.reason}.</div>
+        <div class="coloc-scenarios">
+          <div class="coloc-card">
+            <div class="cc-h">If Server data stays local</div>
+            <div class="cc-v">${c.combinedCpu} cores · ${c.combinedRam} GB · ${fmtGb(c.combinedLocalStorage)}</div>
+          </div>
+          <div class="coloc-card">
+            <div class="cc-h">If retained data is on NAS / external storage</div>
+            <div class="cc-v">${c.combinedCpu} cores · ${c.combinedRam} GB · ${fmtGb(c.combinedExternalStorage)} local</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="assumptions">
+      <h4>Assumptions used</h4>
+      <ul>
+        <li>${inp.analyses_per_submission} analysis job(s) per submission; ${inp.average_analysis_minutes} minute(s) average analysis time (${BASELINE_ANALYSIS_MINUTES} minutes is the reference baseline)</li>
+        <li>Server storage uses ${inp.average_report_and_analysis_mb} MB analysis/report data per analysis and ${inp.average_submission_mb} MB original submission size per submission</li>
+        ${inp.heavy_web_analysis ? "<li>Web Analysis headroom adds CPU only; RAM and disk stay based on total VM slots</li>" : ""}
+        <li>VM count uses the '${r.throughputLabel}' throughput basis: ${fmtNumber(r.throughputPerVmPerDay)} workload units per VM/day</li>
+        <li>Minimum parallel VM slots: ${WORKER_MIN_PARALLEL_VMS}</li>
+      </ul>
+    </div>
+  `;
 }
 
-// ---- Wiring --------------------------------------------------------
-function syncSubtypeEnabled(){
-  const sel = $("subtype");
-  const isBenchmark = state.throughputBasis === THROUGHPUT_BASIS_BENCHMARK;
-  sel.disabled = !isBenchmark;
-  $("subtypeNote").textContent = isBenchmark
-    ? "Refines the benchmark throughput for your predominant traffic."
-    : "Disabled — only applies to the Analysis Performance Benchmark basis.";
-  // Mirror Python: internal basis always uses "calibrated"
-  state.submissionType = isBenchmark ? sel.value : "calibrated";
-}
+/* =========================================================================
+   TOOL 2 — size from a target parallel-VM count
+   ========================================================================= */
 
-function clampNum(el, fallback){
-  let v = parseFloat(String(el.value).replace(",","."));
-  const min = el.min!=="" ? parseFloat(el.min) : -Infinity;
-  if(!isFinite(v)) v = fallback;
-  if(v < min) v = min;
-  return v;
-}
+function initToolParallel() {
+  const formEl = document.getElementById("form-p");
+  formEl.innerHTML = `
+    <div class="field">
+      <label for="p-vms">Target parallel analysis capacity</label>
+      <input type="number" id="p-vms" min="1" value="20" />
+      <div class="hint">Number of VM slots you want running in parallel at once</div>
+    </div>
+    <div class="field">
+      <label>Worker VM disk profile</label>
+      <select id="p-diskprofile">
+        <option value="light">Light — 30 GB per VM</option>
+        <option value="medium">Medium — 40 GB per VM</option>
+        <option value="heavy" selected>Heavy — 50 GB per VM</option>
+      </select>
+    </div>
+    <div class="field toggle-row">
+      <label for="p-heavyweb">Heavy Web Analysis expected</label>
+      <div class="switch" id="p-heavyweb" data-on="false"></div>
+    </div>
+    <button class="btn-primary" id="p-calc">Calculate worker sizing</button>
+  `;
+  document.getElementById("p-heavyweb").addEventListener("click", function () {
+    const on = this.dataset.on === "true";
+    this.dataset.on = (!on).toString();
+    this.classList.toggle("on", !on);
+  });
+  document.getElementById("p-calc").addEventListener("click", () => {
+    const desired = Math.max(1, parseFloat(document.getElementById("p-vms").value) || 1);
+    const diskGbPerVm = diskPerVmFromProfile(document.getElementById("p-diskprofile").value);
+    const heavyWeb = document.getElementById("p-heavyweb").dataset.on === "true";
 
-function bindSeg(id, key, map){
-  const seg = $(id);
-  seg.addEventListener("click", e=>{
-    const btn = e.target.closest("button"); if(!btn) return;
-    [...seg.querySelectorAll("button")].forEach(x=>x.setAttribute("aria-pressed","false"));
-    btn.setAttribute("aria-pressed","true");
-    map(btn);
-    render();
+    const requiredParallelVms = Math.max(WORKER_MIN_PARALLEL_VMS, Math.ceil(desired));
+    const { workers, vmsPerWorker, totalCapacity } = distributeVms(requiredParallelVms);
+    const w = workerSpecsForVmCount(vmsPerWorker, diskGbPerVm, heavyWeb);
+
+    renderParallelResult({ desired, requiredParallelVms, workers, vmsPerWorker, totalCapacity, w, diskGbPerVm, heavyWeb });
   });
 }
 
-bindSeg("periodSeg","submissionsPeriod",btn=>{
-  state.submissionsPeriod = btn.dataset.period;
-  $("subUnit").textContent = state.submissionsPeriod === "monthly" ? "/ month" : "/ day";
-});
-bindSeg("diskSeg","workerDiskProfile",btn=>{
-  state.workerDiskProfile = btn.dataset.profile;
-  state.workerDiskGbPerVm = diskPerVmFromProfile(btn.dataset.profile);
-});
-bindSeg("webSeg","heavyWebAnalysis",btn=>{
-  state.heavyWebAnalysis = btn.dataset.web === "yes";
-});
+function renderParallelResult(d) {
+  const w = d.w;
+  const roundedNote = d.requiredParallelVms > d.desired
+    ? `<div class="hint" style="margin-top:8px;">Raised to the ${WORKER_MIN_PARALLEL_VMS}-VM minimum parallel capacity.</div>`
+    : "";
+  const webNote = d.heavyWeb ? ` plus ${w.cpuWebExtra} extra CPU core(s) reserved for Web Analysis headroom` : "";
 
-$("submissions").addEventListener("input", e=>{ state.submissions = clampNum(e.target,1000); render(); });
-$("retention").addEventListener("input", e=>{ state.retentionDays = clampNum(e.target,180); render(); });
-$("analyses").addEventListener("input", e=>{ state.analysesPerSubmission = clampNum(e.target,1); render(); });
-$("minutes").addEventListener("input", e=>{ state.averageAnalysisMinutes = clampNum(e.target,4); render(); });
-$("reportmb").addEventListener("input", e=>{ state.averageReportMb = clampNum(e.target,100); render(); });
-$("submb").addEventListener("input", e=>{ state.averageSubmissionMb = clampNum(e.target,10); render(); });
+  document.getElementById("results-p").innerHTML = `
+    <div class="stat-strip">
+      <div class="stat"><div class="num">${d.requiredParallelVms}</div><div class="lbl">Target parallel VM slots</div></div>
+      <div class="stat"><div class="num">${d.workers} × ${d.vmsPerWorker}</div><div class="lbl">Workers × VMs</div></div>
+      <div class="stat"><div class="num">${d.totalCapacity}</div><div class="lbl">Total VM capacity delivered</div></div>
+      <div class="stat"><div class="num">${fmtGb(d.diskGbPerVm)}</div><div class="lbl">Disk per VM</div></div>
+    </div>
+    ${roundedNote}
 
-$("desiredParallel").addEventListener("input", e=>{ state.desiredParallelPerWorker = clampNum(e.target,0); render(); });
+    <div class="spec-group">
+      <div class="spec-head"><svg class="tri" viewBox="0 0 10 10"><polygon points="5,0 10,10 0,10" fill="var(--accent)"/></svg><h3>Platform Workers (bare metal)</h3></div>
+      <div class="spec-body">
+        <div class="spec-numbers">
+          <div class="item"><div class="num">${d.workers}</div><div class="lbl">Workers</div><div class="sub">${d.vmsPerWorker} VM(s) each</div></div>
+          <div class="item"><div class="num">${w.cpuRecommended}</div><div class="lbl">CPU cores / worker</div><div class="sub">${fmtNumber(w.cpuMinimum)} calculated</div></div>
+          <div class="item"><div class="num">${w.ramRecommended} GB</div><div class="lbl">RAM / worker</div><div class="sub">${fmtNumber(w.ramMinimum)} GB calculated</div></div>
+        </div>
+        <div class="spec-numbers" style="margin-top:-4px;">
+          <div class="item"><div class="num">${fmtGb(w.diskMinimum)}</div><div class="lbl">Fast disk / worker</div></div>
+          <div class="item"><div class="num">${d.totalCapacity}</div><div class="lbl">Total VM slots</div></div>
+        </div>
+        <div class="spec-note">
+          This tool sizes only the Platform Workers, directly from your target VM count — it doesn't assume a submission volume.
+          Worker basis: 1 core and ${fmtGb(d.diskGbPerVm)} disk per VM; RAM is 2 GB + 3 GB × VM count for 1–4 VMs, or 3.5 GB × VM count for 5+;
+          +2 CPU cores reserved where possible${webNote}. Workers are grouped using the same automatic layout targets as the submissions-based
+          calculator (14 VMs/worker up to 28 total, 16 up to 100, 25 beyond that).
+        </div>
+        <div class="spec-note" style="margin-top:10px;">
+          Need Platform Server sizing (storage, retention) too? Use <b>Size from submissions</b> — it covers both Server and Workers together.
+        </div>
+      </div>
+    </div>
+  `;
+}
 
-$("basis").addEventListener("change", e=>{
-  state.throughputBasis = e.target.value === "benchmark" ? THROUGHPUT_BASIS_BENCHMARK : THROUGHPUT_BASIS_INTERNAL;
-  syncSubtypeEnabled();
-  render();
-});
-$("subtype").addEventListener("change", ()=>{ syncSubtypeEnabled(); render(); });
+/* =========================================================================
+   TOOL 3 — validate hardware you already have
+   ========================================================================= */
 
-$("specsCpu").addEventListener("input", e=>{ specsState.cpu = clampNum(e.target,32); renderSpecsCheck(); });
-$("specsRam").addEventListener("input", e=>{ specsState.ram = clampNum(e.target,128); renderSpecsCheck(); });
-$("specsWebSeg").addEventListener("click", e=>{
-  const btn = e.target.closest("button"); if(!btn) return;
-  [...$("specsWebSeg").querySelectorAll("button")].forEach(x=>x.setAttribute("aria-pressed","false"));
-  btn.setAttribute("aria-pressed","true");
-  specsState.web = btn.dataset.web === "yes";
-  renderSpecsCheck();
-});
+function initToolValidate() {
+  const formEl = document.getElementById("form-v");
+  formEl.innerHTML = `
+    <div class="subsection-label">Expected workload</div>
+    ${workloadFormHTML("v")}
+    <div class="subsection-label" style="margin-top:26px;">Your hardware</div>
+    <div class="field">
+      <label for="v-workers">Platform Workers you have</label>
+      <input type="number" id="v-workers" min="1" value="1" />
+    </div>
+    <div class="field row-2">
+      <div>
+        <label for="v-workercpu">CPU cores / worker</label>
+        <input type="number" id="v-workercpu" min="0" value="16" />
+      </div>
+      <div>
+        <label for="v-workerram">RAM / worker (GB)</label>
+        <input type="number" id="v-workerram" min="0" value="64" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="v-workerdisk">Fast disk / worker (GB)</label>
+      <input type="number" id="v-workerdisk" min="0" value="1000" />
+    </div>
+    <div class="field row-2">
+      <div>
+        <label for="v-servercpu">Server CPU cores</label>
+        <input type="number" id="v-servercpu" min="0" value="8" />
+      </div>
+      <div>
+        <label for="v-serverram">Server RAM (GB)</label>
+        <input type="number" id="v-serverram" min="0" value="16" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="v-serverdisk">Server fast storage (GB)</label>
+      <input type="number" id="v-serverdisk" min="0" value="1000" />
+    </div>
+    <button class="btn-primary" id="v-calc">Validate hardware</button>
+  `;
+  wireWorkloadForm("v");
+  document.getElementById("v-calc").addEventListener("click", () => {
+    const inp = readWorkloadInputs("v");
+    const result = calculate(inp);
 
-$("stamp").textContent = "runs offline · v4";
+    const yourWorkers = Math.max(1, Math.floor(parseFloat(document.getElementById("v-workers").value) || 1));
+    const yourWorkerCpu = parseFloat(document.getElementById("v-workercpu").value) || 0;
+    const yourWorkerRam = parseFloat(document.getElementById("v-workerram").value) || 0;
+    const yourWorkerDisk = parseFloat(document.getElementById("v-workerdisk").value) || 0;
+    const yourServerCpu = parseFloat(document.getElementById("v-servercpu").value) || 0;
+    const yourServerRam = parseFloat(document.getElementById("v-serverram").value) || 0;
+    const yourServerDisk = parseFloat(document.getElementById("v-serverdisk").value) || 0;
 
-syncSubtypeEnabled();
-render();
-renderSpecsCheck();
-</script>
+    // Spread the required parallel VM count across the worker count the
+    // user actually has, then run the same per-worker sizing formulas.
+    const vmsPerYourWorker = Math.ceil(result.requiredParallelVms / yourWorkers);
+    const requiredWorkerSpecs = workerSpecsForVmCount(vmsPerYourWorker, inp.worker_disk_gb_per_vm, inp.heavy_web_analysis);
 
-<script>
-/* =====================================================================
-   Login gate. The plaintext password is NOT stored here — only a salted
-   SHA-256 hash of "salt|username:password". This keeps casual visitors
-   out and keeps the credentials out of the source, but note: a static
-   page is fully inspectable, so this is access-gating, not real security.
-   ===================================================================== */
-(function(){
-  "use strict";
-  var SALT = "24baa5020ca1ebd5c60876cb9d25c3d5";
-  var EXPECTED = "5aeac242857dea81b7277e65dd4f4fabce021c67d131a43fad60f6456836143c";
-  var SESSION_KEY = "vmray_sizing_auth";
+    const yourTotalCapacity = yourWorkers * vmsPerYourWorker;
 
-  var gate = document.getElementById("gate");
-  var app = document.querySelector(".wrap");
-  var form = document.getElementById("gateForm");
-  var userEl = document.getElementById("gUser");
-  var passEl = document.getElementById("gPass");
-  var btn = document.getElementById("gateBtn");
-  var errEl = document.getElementById("gateError");
+    const checks = [
+      {
+        name: "Platform Workers", sub: `${result.workers} recommended, spread over your ${yourWorkers}`,
+        required: `${vmsPerYourWorker} VM(s) / worker`, have: `${yourWorkers} worker(s)`,
+        pass: yourWorkers >= 1,
+      },
+      {
+        name: "Worker CPU", sub: `per worker, running ${vmsPerYourWorker} VM(s)`,
+        required: `${fmtNumber(requiredWorkerSpecs.cpuMinimum)} cores`, have: `${fmtNumber(yourWorkerCpu)} cores`,
+        pass: yourWorkerCpu >= requiredWorkerSpecs.cpuMinimum,
+      },
+      {
+        name: "Worker RAM", sub: `per worker, running ${vmsPerYourWorker} VM(s)`,
+        required: `${fmtNumber(requiredWorkerSpecs.ramMinimum)} GB`, have: `${fmtNumber(yourWorkerRam)} GB`,
+        pass: yourWorkerRam >= requiredWorkerSpecs.ramMinimum,
+      },
+      {
+        name: "Worker fast disk", sub: `per worker, running ${vmsPerYourWorker} VM(s)`,
+        required: fmtGb(requiredWorkerSpecs.diskMinimum), have: fmtGb(yourWorkerDisk),
+        pass: yourWorkerDisk >= requiredWorkerSpecs.diskMinimum,
+      },
+      {
+        name: "Total parallel capacity", sub: "workers × VMs / worker",
+        required: `${result.requiredParallelVms} slots`, have: `${yourTotalCapacity} slots`,
+        pass: yourTotalCapacity >= result.requiredParallelVms,
+      },
+      {
+        name: "Server CPU", sub: "Platform Server", required: `${result.serverCpuCoresRecommended} cores`, have: `${fmtNumber(yourServerCpu)} cores`,
+        pass: yourServerCpu >= result.serverCpuCoresRecommended,
+      },
+      {
+        name: "Server RAM", sub: "Platform Server", required: `${result.serverRamGbRecommended} GB`, have: `${fmtNumber(yourServerRam)} GB`,
+        pass: yourServerRam >= result.serverRamGbRecommended,
+      },
+      {
+        name: "Server fast storage", sub: "Platform Server", required: fmtGb(result.serverStorageGbRecommended), have: fmtGb(yourServerDisk),
+        pass: yourServerDisk >= result.serverStorageGbRecommended,
+      },
+    ];
 
-  function reveal(){
-    gate.hidden = true;
-    app.hidden = false;
-    document.body.classList.remove("locked");
-  }
-
-  // Already signed in this tab? (degrades gracefully if storage is blocked)
-  try {
-    if (sessionStorage.getItem(SESSION_KEY) === EXPECTED) { reveal(); return; }
-  } catch (e) {}
-
-  async function sha256Hex(str){
-    var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(function(b){
-      return b.toString(16).padStart(2, "0");
-    }).join("");
-  }
-
-  form.addEventListener("submit", async function(e){
-    e.preventDefault();
-    errEl.classList.remove("show");
-    btn.disabled = true;
-    var user = userEl.value.trim();
-    var pass = passEl.value;
-    try {
-      var digest = await sha256Hex(SALT + "|" + user + ":" + pass);
-      if (digest === EXPECTED){
-        try { sessionStorage.setItem(SESSION_KEY, EXPECTED); } catch (e) {}
-        reveal();
-      } else {
-        errEl.classList.add("show");
-        passEl.value = "";
-        passEl.focus();
-      }
-    } catch (err) {
-      errEl.textContent = "Could not verify sign-in in this browser. Try a modern browser over https://.";
-      errEl.classList.add("show");
-    } finally {
-      btn.disabled = false;
-    }
+    renderValidateResult(checks);
   });
+}
 
-  userEl.focus();
-})();
+function renderValidateResult(checks) {
+  const failing = checks.filter(c => !c.pass);
+  const allPass = failing.length === 0;
+  const bannerColor = allPass ? "var(--good)" : "var(--bad)";
+  const bannerBg = allPass ? "var(--good-bg)" : "var(--bad-bg)";
+  const bannerTitle = allPass ? "Your hardware meets this workload" : `Falls short in ${failing.length} area${failing.length > 1 ? "s" : ""}`;
+  const bannerSub = allPass
+    ? "Every resource checked is at or above what VMRay's model recommends."
+    : "See below for where to add capacity: " + failing.map(f => f.name).join(", ") + ".";
+
+  const rows = checks.map(c => `
+    <div class="check-row ${c.pass ? "pass" : "fail"}">
+      <div class="cr-name">${c.name}<span class="sub">${c.sub}</span></div>
+      <div class="cr-val">${c.required}</div>
+      <div class="cr-val">${c.have}</div>
+      <div class="cr-status">${c.pass ? "Sufficient" : "Short"}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("results-v").innerHTML = `
+    <div class="verdict-banner" style="border-color:${bannerColor};background:${bannerBg};">
+      <svg class="vb-icon" viewBox="0 0 24 24" fill="none">
+        ${allPass
+          ? `<path d="M4 12l5 5 11-11" stroke="${bannerColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`
+          : `<path d="M6 6l12 12M18 6L6 18" stroke="${bannerColor}" stroke-width="2.5" stroke-linecap="round"/>`}
+      </svg>
+      <div>
+        <div class="vb-title" style="color:${bannerColor};">${bannerTitle}</div>
+        <div class="vb-sub">${bannerSub}</div>
+      </div>
+    </div>
+
+    <div class="check-table">
+      <div class="check-row head">
+        <div>Resource</div><div>Required</div><div>You have</div><div>Status</div>
+      </div>
+      ${rows}
+    </div>
+  `;
+}
+
+/* =========================================================================
+   Tool switcher + boot
+   ========================================================================= */
+
+document.querySelectorAll(".tool-switch button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tool-switch button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tool-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(`tool-${btn.dataset.tool}`).classList.add("active");
+  });
+});
+
+initToolSubmissions();
+initToolParallel();
+initToolValidate();
 </script>
 </body>
 </html>
