@@ -246,6 +246,9 @@ details.advanced summary::before{content:"▸";font-size:11px;transition:transfo
 details.advanced[open] summary::before{transform:rotate(90deg);}
 details.advanced .field{margin-top:18px;}
 
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.row-3 .mini-lbl{font-size:11.5px;color:var(--text-faint);margin-bottom:5px;display:block;}
+details.advanced.inner{margin-top:6px;padding-top:12px;}
 .btn-primary{
   margin-top:24px;width:100%;
   background:var(--accent);color:#04101f;border:none;
@@ -683,8 +686,145 @@ function fmtGb(gb) {
 }
 
 /* =========================================================================
+   WORKER DISK MODEL — "OS mix & sample size" option
+   Per-VM disk = weighted OS image footprint
+               + per-analysis artifacts (memory snapshot, logs, PCAP, screenshots)
+               + sample working space (average sample size x expansion factor)
+   then x headroom. Worker disk = per-VM disk x parallel VMs on that worker.
+   The figures are planning estimates, editable under "Disk assumptions".
+   ========================================================================= */
+const DISK_DEFAULTS = {
+  windows_image_gb: 40,   // Windows 10 / 11 VM image + snapshot footprint
+  linux_image_gb: 20,     // Linux VM image + snapshot footprint
+  macos_image_gb: 50,     // macOS VM image + snapshot footprint
+  artifact_gb: 2.0,       // memory dump, logs, PCAP, screenshots per running analysis
+  expansion: 3.0,         // unpacked / dropped files vs. the original sample size
+  headroom: 1.20,
+};
+
+function diskPerVmFromSample(mix, sampleMb, a) {
+  const total = mix.windows + mix.linux + mix.macos;
+  const shares = total > 0
+    ? { windows: mix.windows / total, linux: mix.linux / total, macos: mix.macos / total }
+    : { windows: 1, linux: 0, macos: 0 };
+  const osBase = shares.windows * a.windows_image_gb + shares.linux * a.linux_image_gb + shares.macos * a.macos_image_gb;
+  const sampleScratch = (sampleMb / 1024.0) * a.expansion;
+  const raw = osBase + a.artifact_gb + sampleScratch;
+  const perVm = Math.ceil(raw * a.headroom);
+  return { perVm, osBase, artifact: a.artifact_gb, sampleScratch, raw, headroom: a.headroom, sampleMb, shares, expansion: a.expansion };
+}
+
+function fmtGbSmall(gb) { return gb < 10 ? gb.toFixed(1) + " GB" : fmtGb(gb); }
+
+function diskBasisText(detail, perVm) {
+  if (!detail) return `${fmtGb(perVm)} disk per VM`;
+  const pct = x => Math.round(x * 100) + "%";
+  const sh = detail.shares;
+  const mixTxt = [["Windows", sh.windows], ["Linux", sh.linux], ["macOS", sh.macos]]
+    .filter(([, v]) => v > 0).map(([n, v]) => `${pct(v)} ${n}`).join(" / ");
+  return `<b>${fmtGb(detail.perVm)}</b> disk per VM = ${fmtGbSmall(detail.osBase)} OS image (${mixTxt}) + ${fmtGbSmall(detail.artifact)} analysis artifacts + ${fmtGbSmall(detail.sampleScratch)} sample working space (${fmtNumber(detail.sampleMb)} MB avg sample × ${detail.expansion}), +${Math.round((detail.headroom - 1) * 100)}% headroom`;
+}
+
+/* =========================================================================
    UI — form builders
    ========================================================================= */
+
+
+function diskModeHTML(p) {
+  return `
+    <div class="field">
+      <label>Worker disk sizing</label>
+      <div class="choice-cards" id="${p}-diskmode">
+        <div class="choice-card selected" data-value="profile">
+          <div class="cc-title">Fixed profile</div>
+          <div class="cc-sub">30 / 40 / 50 GB per VM</div>
+        </div>
+        <div class="choice-card" data-value="sample">
+          <div class="cc-title">OS mix &amp; sample size</div>
+          <div class="cc-sub">Based on your workload</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function diskSampleHTML(p, syncedWithAdvanced) {
+  return `
+    <div id="${p}-sample-wrap" style="display:none;">
+      <div class="field">
+        <label>OS mix of parallel analyses (%)</label>
+        <div class="row-3">
+          <div><span class="mini-lbl">Windows 10 / 11</span><input type="number" id="${p}-mix-win" min="0" max="100" value="100" /></div>
+          <div><span class="mini-lbl">Linux</span><input type="number" id="${p}-mix-lin" min="0" max="100" value="0" /></div>
+          <div><span class="mini-lbl">macOS</span><input type="number" id="${p}-mix-mac" min="0" max="100" value="0" /></div>
+        </div>
+        <div class="hint" id="${p}-mixhint">Total: 100%</div>
+      </div>
+      <div class="field">
+        <label for="${p}-samplemb">Average sample size (MB)</label>
+        <input type="number" id="${p}-samplemb" min="0" value="10" />
+        ${syncedWithAdvanced ? '<div class="hint">Kept in sync with "Original submission size" under Advanced assumptions</div>' : ""}
+      </div>
+      <details class="advanced inner">
+        <summary>Disk assumptions</summary>
+        <div class="field"><label for="${p}-img-win">Windows 10 / 11 image footprint (GB)</label><input type="number" id="${p}-img-win" min="1" value="${DISK_DEFAULTS.windows_image_gb}" /></div>
+        <div class="field"><label for="${p}-img-lin">Linux image footprint (GB)</label><input type="number" id="${p}-img-lin" min="1" value="${DISK_DEFAULTS.linux_image_gb}" /></div>
+        <div class="field"><label for="${p}-img-mac">macOS image footprint (GB)</label><input type="number" id="${p}-img-mac" min="1" value="${DISK_DEFAULTS.macos_image_gb}" /></div>
+        <div class="field"><label for="${p}-artifact">Analysis artifacts per running VM (GB)</label><input type="number" id="${p}-artifact" min="0" step="0.5" value="${DISK_DEFAULTS.artifact_gb}" /><div class="hint">Memory snapshot, logs, PCAP, screenshots</div></div>
+        <div class="field"><label for="${p}-expansion">Sample working-space multiplier</label><input type="number" id="${p}-expansion" min="1" step="0.5" value="${DISK_DEFAULTS.expansion}" /><div class="hint">Unpacked and dropped files vs. original sample size</div></div>
+        <div class="field"><label for="${p}-headroom">Disk headroom (%)</label><input type="number" id="${p}-headroom" min="0" value="${Math.round((DISK_DEFAULTS.headroom - 1) * 100)}" /></div>
+      </details>
+    </div>`;
+}
+
+function wireDiskBlock(p) {
+  const modeWrap = document.getElementById(`${p}-diskmode`);
+  const apply = () => {
+    const mode = modeWrap.querySelector(".choice-card.selected").dataset.value;
+    document.getElementById(`${p}-profile-wrap`).style.display = mode === "profile" ? "block" : "none";
+    document.getElementById(`${p}-sample-wrap`).style.display = mode === "sample" ? "block" : "none";
+  };
+  modeWrap.querySelectorAll(".choice-card").forEach(card => {
+    card.addEventListener("click", () => {
+      modeWrap.querySelectorAll(".choice-card").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+      apply();
+    });
+  });
+  const hint = document.getElementById(`${p}-mixhint`);
+  const updateMix = () => {
+    const t = ["win", "lin", "mac"].reduce((sum, k) => sum + (parseFloat(document.getElementById(`${p}-mix-${k}`).value) || 0), 0);
+    hint.textContent = Math.round(t) === 100 ? "Total: 100%" : `Total: ${fmtNumber(t)}% — will be scaled to 100%`;
+  };
+  ["win", "lin", "mac"].forEach(k => document.getElementById(`${p}-mix-${k}`).addEventListener("input", updateMix));
+
+  // keep the sample size here in sync with the existing "Original submission size" field
+  const adv = document.getElementById(`${p}-submb`);
+  const mine = document.getElementById(`${p}-samplemb`);
+  if (adv && mine) {
+    adv.addEventListener("input", () => { mine.value = adv.value; });
+    mine.addEventListener("input", () => { adv.value = mine.value; });
+  }
+  apply();
+}
+
+// Returns { perVm, detail } for whichever disk mode is selected.
+function readDiskPerVm(p) {
+  const mode = document.getElementById(`${p}-diskmode`).querySelector(".choice-card.selected").dataset.value;
+  if (mode === "profile") {
+    return { perVm: diskPerVmFromProfile(document.getElementById(`${p}-diskprofile`).value), detail: null };
+  }
+  const num = (id, dflt) => { const v = parseFloat(document.getElementById(`${p}-${id}`).value); return Number.isFinite(v) ? v : dflt; };
+  const mix = { windows: Math.max(0, num("mix-win", 0)), linux: Math.max(0, num("mix-lin", 0)), macos: Math.max(0, num("mix-mac", 0)) };
+  const detail = diskPerVmFromSample(mix, Math.max(0, num("samplemb", 0)), {
+    windows_image_gb: num("img-win", DISK_DEFAULTS.windows_image_gb),
+    linux_image_gb: num("img-lin", DISK_DEFAULTS.linux_image_gb),
+    macos_image_gb: num("img-mac", DISK_DEFAULTS.macos_image_gb),
+    artifact_gb: num("artifact", DISK_DEFAULTS.artifact_gb),
+    expansion: num("expansion", DISK_DEFAULTS.expansion),
+    headroom: 1 + Math.max(0, num("headroom", 20)) / 100,
+  });
+  return { perVm: detail.perVm, detail };
+}
 
 function workloadFormHTML(p) {
   return `
@@ -705,6 +845,9 @@ function workloadFormHTML(p) {
       <div class="hint">How long analysis data and submissions are stored</div>
     </div>
 
+    ${diskModeHTML(p)}
+
+    <div id="${p}-profile-wrap">
     <div class="field">
       <label>Worker VM disk profile</label>
       <select id="${p}-diskprofile">
@@ -713,6 +856,9 @@ function workloadFormHTML(p) {
         <option value="heavy" selected>Heavy — 50 GB per VM</option>
       </select>
     </div>
+    </div>
+
+    ${diskSampleHTML(p, true)}
 
     <div class="field toggle-row">
       <label for="${p}-heavyweb">Heavy Web Analysis expected</label>
@@ -782,6 +928,7 @@ function wireWorkloadForm(p) {
     sw.classList.toggle("on", !on);
   });
   updateSubtypeVisibility(p);
+  wireDiskBlock(p);
 }
 
 function updateSubtypeVisibility(p) {
@@ -795,11 +942,13 @@ function readWorkloadInputs(p) {
   const basisWrap = document.getElementById(`${p}-basis`);
   const throughput_basis = basisWrap.querySelector(".choice-card.selected").dataset.value;
   const heavySwitch = document.getElementById(`${p}-heavyweb`);
+  const disk = readDiskPerVm(p);
   return {
+    disk_detail: disk.detail,
     submissions: parseFloat(document.getElementById(`${p}-amount`).value) || 0,
     submissions_period: document.getElementById(`${p}-period`).value,
     retention_days: parseFloat(document.getElementById(`${p}-retention`).value) || 0,
-    worker_disk_gb_per_vm: diskPerVmFromProfile(document.getElementById(`${p}-diskprofile`).value),
+    worker_disk_gb_per_vm: disk.perVm,
     heavy_web_analysis: heavySwitch.dataset.on === "true",
     throughput_basis,
     submission_type: throughput_basis === THROUGHPUT_BASIS_BENCHMARK ? document.getElementById(`${p}-subtype`).value : "calibrated",
@@ -871,7 +1020,7 @@ function renderStandardResult(r, inp) {
           <div class="item"><div class="num">${r.totalParallelVmCapacity}</div><div class="lbl">Total VM slots</div></div>
         </div>
         <div class="spec-note">
-          Worker basis: 1 core and ${fmtGb(inp.worker_disk_gb_per_vm)} disk per VM; RAM is 2 GB + 3 GB × VM count for 1–4 VMs, or 3.5 GB × VM count for 5+;
+          Worker basis: 1 core and ${diskBasisText(inp.disk_detail, inp.worker_disk_gb_per_vm)}; RAM is 2 GB + 3 GB × VM count for 1–4 VMs, or 3.5 GB × VM count for 5+;
           +2 CPU cores reserved where possible${webNote}.
         </div>
       </div>
@@ -923,6 +1072,8 @@ function initToolParallel() {
       <input type="number" id="p-vms" min="1" value="20" />
       <div class="hint">Number of VM slots you want running in parallel at once</div>
     </div>
+    ${diskModeHTML("p")}
+    <div id="p-profile-wrap">
     <div class="field">
       <label>Worker VM disk profile</label>
       <select id="p-diskprofile">
@@ -931,12 +1082,15 @@ function initToolParallel() {
         <option value="heavy" selected>Heavy — 50 GB per VM</option>
       </select>
     </div>
+    </div>
+    ${diskSampleHTML("p", false)}
     <div class="field toggle-row">
       <label for="p-heavyweb">Heavy Web Analysis expected</label>
       <div class="switch" id="p-heavyweb" data-on="false"></div>
     </div>
     <button class="btn-primary" id="p-calc">Calculate worker sizing</button>
   `;
+  wireDiskBlock("p");
   document.getElementById("p-heavyweb").addEventListener("click", function () {
     const on = this.dataset.on === "true";
     this.dataset.on = (!on).toString();
@@ -944,14 +1098,15 @@ function initToolParallel() {
   });
   document.getElementById("p-calc").addEventListener("click", () => {
     const desired = Math.max(1, parseFloat(document.getElementById("p-vms").value) || 1);
-    const diskGbPerVm = diskPerVmFromProfile(document.getElementById("p-diskprofile").value);
+    const disk = readDiskPerVm("p");
+    const diskGbPerVm = disk.perVm;
     const heavyWeb = document.getElementById("p-heavyweb").dataset.on === "true";
 
     const requiredParallelVms = Math.max(WORKER_MIN_PARALLEL_VMS, Math.ceil(desired));
     const { workers, vmsPerWorker, totalCapacity } = distributeVms(requiredParallelVms);
     const w = workerSpecsForVmCount(vmsPerWorker, diskGbPerVm, heavyWeb);
 
-    renderParallelResult({ desired, requiredParallelVms, workers, vmsPerWorker, totalCapacity, w, diskGbPerVm, heavyWeb });
+    renderParallelResult({ desired, requiredParallelVms, workers, vmsPerWorker, totalCapacity, w, diskGbPerVm, diskDetail: disk.detail, heavyWeb });
   });
 }
 
@@ -985,7 +1140,7 @@ function renderParallelResult(d) {
         </div>
         <div class="spec-note">
           This tool sizes only the Platform Workers, directly from your target VM count — it doesn't assume a submission volume.
-          Worker basis: 1 core and ${fmtGb(d.diskGbPerVm)} disk per VM; RAM is 2 GB + 3 GB × VM count for 1–4 VMs, or 3.5 GB × VM count for 5+;
+          Worker basis: 1 core and ${diskBasisText(d.diskDetail, d.diskGbPerVm)}; RAM is 2 GB + 3 GB × VM count for 1–4 VMs, or 3.5 GB × VM count for 5+;
           +2 CPU cores reserved where possible${webNote}. Workers are grouped using the same automatic layout targets as the submissions-based
           calculator (14 VMs/worker up to 28 total, 16 up to 100, 25 beyond that).
         </div>
@@ -1078,7 +1233,7 @@ function initToolValidate() {
         pass: yourWorkerRam >= requiredWorkerSpecs.ramMinimum,
       },
       {
-        name: "Worker fast disk", sub: `per worker, running ${vmsPerYourWorker} VM(s)`,
+        name: "Worker fast disk", sub: `per worker: ${vmsPerYourWorker} VM(s) × ${fmtGb(inp.worker_disk_gb_per_vm)}`,
         required: fmtGb(requiredWorkerSpecs.diskMinimum), have: fmtGb(yourWorkerDisk),
         pass: yourWorkerDisk >= requiredWorkerSpecs.diskMinimum,
       },
